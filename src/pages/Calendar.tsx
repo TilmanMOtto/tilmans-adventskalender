@@ -126,7 +126,8 @@ const Calendar = () => {
         <CalendarGrid 
           key={refreshKey}
           onDoorClick={setSelectedDay} 
-          userId={user?.id} 
+          userId={user?.id}
+          isAdmin={isAdmin}
         />
         
         {selectedDay && (

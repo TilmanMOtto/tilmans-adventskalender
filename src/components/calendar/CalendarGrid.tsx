@@ -5,9 +5,10 @@ import CalendarDoor from "./CalendarDoor";
 interface CalendarGridProps {
   onDoorClick: (day: number) => void;
   userId: string;
+  isAdmin: boolean;
 }
 
-const CalendarGrid = ({ onDoorClick, userId }: CalendarGridProps) => {
+const CalendarGrid = ({ onDoorClick, userId, isAdmin }: CalendarGridProps) => {
   const [entries, setEntries] = useState<any[]>([]);
   const [progress, setProgress] = useState<any[]>([]);
   const totalDays = 30;
@@ -48,7 +49,7 @@ const CalendarGrid = ({ onDoorClick, userId }: CalendarGridProps) => {
   };
 
   const isDoorAvailable = (day: number) => {
-    return day <= currentDay;
+    return isAdmin || day <= currentDay;
   };
 
   const hasContent = (day: number) => {
