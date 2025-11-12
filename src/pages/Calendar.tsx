@@ -108,16 +108,14 @@ const Calendar = () => {
             {isAdmin && (
               <Button 
                 onClick={() => navigate("/admin")}
-                variant="outline"
-                className="flex-1 md:flex-none text-sm md:text-base border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+                className="flex-1 md:flex-none text-sm md:text-base bg-door-available hover:bg-door-available/90 text-white border-2 border-door-available shadow-lg hover:shadow-xl rounded-lg md:rounded-2xl transition-all duration-300"
               >
                 Admin Panel
               </Button>
             )}
             <Button 
               onClick={handleLogout}
-              variant="outline"
-              className="flex-1 md:flex-none text-sm md:text-base border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+              className="flex-1 md:flex-none text-sm md:text-base bg-door-locked hover:bg-door-locked/90 text-white border-2 border-door-locked shadow-lg hover:shadow-xl rounded-lg md:rounded-2xl transition-all duration-300"
             >
               <LogOut className="w-4 h-4 mr-2" />
               Logout
