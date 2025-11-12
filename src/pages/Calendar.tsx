@@ -124,11 +124,7 @@ const Calendar = () => {
           </div>
         </div>
 
-        <CalendarGrid 
-          onDoorClick={setSelectedDay} 
-          userId={user?.id}
-          key={selectedDay ? `refresh-${selectedDay}` : 'calendar'}
-        />
+        <CalendarGrid onDoorClick={setSelectedDay} userId={user?.id} />
         
         {selectedDay && (
           <DoorModal 

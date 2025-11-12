@@ -1,6 +1,5 @@
 import { Lock, CheckCircle2, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
 
 interface CalendarDoorProps {
   dayNumber: number;
@@ -11,8 +10,6 @@ interface CalendarDoorProps {
 }
 
 const CalendarDoor = ({ dayNumber, isOpened, isAvailable, hasContent, onClick }: CalendarDoorProps) => {
-  const [isOpening, setIsOpening] = useState(false);
-
   const getStatusColor = () => {
     if (isOpened) return "bg-door-opened border-door-opened";
     if (isAvailable && hasContent) return "bg-door-available border-door-available hover:scale-105";
@@ -27,19 +24,9 @@ const CalendarDoor = ({ dayNumber, isOpened, isAvailable, hasContent, onClick }:
 
   const canClick = isAvailable && hasContent;
 
-  const handleClick = () => {
-    if (canClick) {
-      setIsOpening(true);
-      setTimeout(() => {
-        onClick();
-        setIsOpening(false);
-      }, 400);
-    }
-  };
-
   return (
     <button
-      onClick={handleClick}
+      onClick={canClick ? onClick : undefined}
       disabled={!canClick}
       className={cn(
         "relative aspect-square rounded-2xl border-2 transition-all duration-300",
@@ -47,13 +34,8 @@ const CalendarDoor = ({ dayNumber, isOpened, isAvailable, hasContent, onClick }:
         "shadow-lg hover:shadow-xl",
         getStatusColor(),
         canClick && "cursor-pointer",
-        !canClick && "cursor-not-allowed opacity-70",
-        isOpening && "animate-[scale-in_0.4s_ease-out,fade-in_0.4s_ease-out]"
+        !canClick && "cursor-not-allowed opacity-70"
       )}
-      style={{
-        transformOrigin: "center",
-        transform: isOpening ? "scale(1.1) rotateY(10deg)" : undefined,
-      }}
     >
       <span className="text-3xl font-bold text-white drop-shadow-lg">
         {dayNumber}
