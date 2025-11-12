@@ -91,7 +91,7 @@ const Calendar = () => {
         backgroundAttachment: "fixed",
       }}
     >
-      <div className="absolute inset-0 bg-background/95 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-background/10 backdrop-blur-sm" />
       
       <div className="relative z-10 container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
