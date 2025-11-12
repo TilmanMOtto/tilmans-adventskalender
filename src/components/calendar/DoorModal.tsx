@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { toast } from "sonner";
 import confetti from "canvas-confetti";
 
@@ -102,17 +103,27 @@ const DoorModal = ({ dayNumber, userId, onClose, onDoorOpened }: DoorModalProps)
             </DialogHeader>
             
             {entry.image_urls && entry.image_urls.length > 0 && (
-              <div className="space-y-4">
-                {entry.image_urls.map((url: string, index: number) => (
-                  <div key={index} className="relative w-full aspect-video rounded-lg overflow-hidden shadow-lg">
-                    <img 
-                      src={url} 
-                      alt={`${entry.title} - Image ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                ))}
-              </div>
+              <Carousel className="w-full">
+                <CarouselContent>
+                  {entry.image_urls.map((url: string, index: number) => (
+                    <CarouselItem key={index}>
+                      <div className="relative w-full aspect-video rounded-lg overflow-hidden shadow-lg">
+                        <img 
+                          src={url} 
+                          alt={`${entry.title} - Image ${index + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                {entry.image_urls.length > 1 && (
+                  <>
+                    <CarouselPrevious className="left-2" />
+                    <CarouselNext className="right-2" />
+                  </>
+                )}
+              </Carousel>
             )}
             
             <div className="prose prose-lg max-w-none">

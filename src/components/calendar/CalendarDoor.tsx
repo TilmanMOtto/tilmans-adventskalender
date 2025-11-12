@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Lock, CheckCircle2, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -10,6 +11,8 @@ interface CalendarDoorProps {
 }
 
 const CalendarDoor = ({ dayNumber, isOpened, isAvailable, hasContent, onClick }: CalendarDoorProps) => {
+  const [isFlipping, setIsFlipping] = useState(false);
+
   const getStatusColor = () => {
     if (isOpened) return "bg-door-opened border-door-opened";
     if (isAvailable && hasContent) return "bg-door-available border-door-available hover:scale-105";
@@ -24,18 +27,33 @@ const CalendarDoor = ({ dayNumber, isOpened, isAvailable, hasContent, onClick }:
 
   const canClick = isAvailable && hasContent;
 
+  const handleClick = () => {
+    if (!canClick || isFlipping) return;
+    
+    setIsFlipping(true);
+    setTimeout(() => {
+      setIsFlipping(false);
+      onClick();
+    }, 600);
+  };
+
   return (
     <button
-      onClick={canClick ? onClick : undefined}
+      onClick={handleClick}
       disabled={!canClick}
       className={cn(
-        "relative aspect-square rounded-lg md:rounded-2xl border-2 transition-all duration-300",
+        "relative aspect-square rounded-lg md:rounded-2xl border-2",
         "flex flex-col items-center justify-center gap-1 md:gap-2",
         "shadow-lg hover:shadow-xl",
         getStatusColor(),
         canClick && "cursor-pointer",
-        !canClick && "cursor-not-allowed opacity-70"
+        !canClick && "cursor-not-allowed opacity-70",
+        isFlipping && "animate-door-flip",
+        !isFlipping && "transition-all duration-300"
       )}
+      style={{
+        transformStyle: "preserve-3d",
+      }}
     >
       <span className="text-xl sm:text-2xl md:text-3xl font-bold text-white drop-shadow-lg">
         {dayNumber}

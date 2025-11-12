@@ -85,10 +85,19 @@ export default {
             height: "0",
           },
         },
+        "door-flip": {
+          "0%": {
+            transform: "perspective(1000px) rotateY(0deg)",
+          },
+          "100%": {
+            transform: "perspective(1000px) rotateY(90deg)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "door-flip": "door-flip 0.6s ease-in-out",
       },
     },
   },
