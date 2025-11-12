@@ -6,6 +6,8 @@ import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import AdminForm from "@/components/admin/AdminForm";
 import AdminList from "@/components/admin/AdminList";
+import UserDashboard from "@/components/admin/UserDashboard";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -76,16 +78,29 @@ const Admin = () => {
           </h1>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <AdminForm 
-            editingEntry={editingEntry}
-            onSaveSuccess={handleSaveSuccess}
-          />
-          <AdminList 
-            onEdit={setEditingEntry}
-            refreshTrigger={refreshTrigger}
-          />
-        </div>
+        <Tabs defaultValue="content" className="space-y-6">
+          <TabsList className="grid w-full max-w-md grid-cols-2">
+            <TabsTrigger value="content">Content Management</TabsTrigger>
+            <TabsTrigger value="progress">User Progress</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="content">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <AdminForm 
+                editingEntry={editingEntry}
+                onSaveSuccess={handleSaveSuccess}
+              />
+              <AdminList 
+                onEdit={setEditingEntry}
+                refreshTrigger={refreshTrigger}
+              />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="progress">
+            <UserDashboard />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
