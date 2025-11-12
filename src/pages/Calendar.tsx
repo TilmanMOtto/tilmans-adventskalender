@@ -95,11 +95,11 @@ const Calendar = () => {
       
       <div className="relative z-10 container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+          <div className="bg-background/80 backdrop-blur-md rounded-lg px-6 py-4 shadow-lg">
+            <h1 className="text-4xl font-bold text-foreground drop-shadow-lg">
               November Advent Calendar
             </h1>
-            <p className="text-muted-foreground mt-2">
+            <p className="text-foreground/90 mt-2 font-medium drop-shadow">
               Welcome, {profile?.username}! {isAdmin && "(Admin)"}
             </p>
           </div>
