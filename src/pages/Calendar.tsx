@@ -98,7 +98,7 @@ const Calendar = () => {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4 md:mb-8">
           <div className="bg-background/80 backdrop-blur-md rounded-lg px-4 py-3 md:px-6 md:py-4 shadow-lg">
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground drop-shadow-lg">
-              November Advent Calendar
+              Tilman's Advent Calendar
             </h1>
             <p className="text-sm md:text-base text-foreground/90 mt-1 md:mt-2 font-medium drop-shadow">
               Welcome, {profile?.username}! {isAdmin && "(Admin)"}

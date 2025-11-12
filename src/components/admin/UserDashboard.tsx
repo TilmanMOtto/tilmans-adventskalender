@@ -24,7 +24,7 @@ interface UserProgress {
 const UserDashboard = () => {
   const [usersProgress, setUsersProgress] = useState<UserProgress[]>([]);
   const [loading, setLoading] = useState(true);
-  const totalDays = 30;
+  const totalDays = 24;
 
   useEffect(() => {
     fetchUserProgress();

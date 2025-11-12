@@ -11,7 +11,7 @@ interface CalendarGridProps {
 const CalendarGrid = ({ onDoorClick, userId, isAdmin }: CalendarGridProps) => {
   const [entries, setEntries] = useState<any[]>([]);
   const [progress, setProgress] = useState<any[]>([]);
-  const totalDays = 30;
+  const totalDays = 24;
 
   useEffect(() => {
     fetchData();
@@ -34,11 +34,11 @@ const CalendarGrid = ({ onDoorClick, userId, isAdmin }: CalendarGridProps) => {
 
   const getCurrentDay = () => {
     const now = new Date();
-    // For November testing: return current day of November
-    if (now.getMonth() === 10) { // November is month 10 (0-indexed)
+    // For December advent calendar: return current day of December
+    if (now.getMonth() === 11) { // December is month 11 (0-indexed)
       return now.getDate();
     }
-    // If not November, allow all doors for testing
+    // If not December, allow all doors for testing
     return totalDays;
   };
 
