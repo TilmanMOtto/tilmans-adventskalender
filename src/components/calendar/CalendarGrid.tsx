@@ -56,7 +56,7 @@ const CalendarGrid = ({ onDoorClick, userId }: CalendarGridProps) => {
   };
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-4">
+    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 sm:gap-3 md:gap-4">
       {Array.from({ length: totalDays }, (_, i) => i + 1).map((day) => (
         <CalendarDoor
           key={day}

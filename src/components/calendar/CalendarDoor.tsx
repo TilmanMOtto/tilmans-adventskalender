@@ -29,15 +29,15 @@ const CalendarDoor = ({ dayNumber, isOpened, isAvailable, hasContent, onClick }:
       onClick={canClick ? onClick : undefined}
       disabled={!canClick}
       className={cn(
-        "relative aspect-square rounded-2xl border-2 transition-all duration-300",
-        "flex flex-col items-center justify-center gap-2",
+        "relative aspect-square rounded-lg md:rounded-2xl border-2 transition-all duration-300",
+        "flex flex-col items-center justify-center gap-1 md:gap-2",
         "shadow-lg hover:shadow-xl",
         getStatusColor(),
         canClick && "cursor-pointer",
         !canClick && "cursor-not-allowed opacity-70"
       )}
     >
-      <span className="text-3xl font-bold text-white drop-shadow-lg">
+      <span className="text-xl sm:text-2xl md:text-3xl font-bold text-white drop-shadow-lg">
         {dayNumber}
       </span>
       <div className="text-white/90">
@@ -45,7 +45,7 @@ const CalendarDoor = ({ dayNumber, isOpened, isAvailable, hasContent, onClick }:
       </div>
       
       {isOpened && (
-        <div className="absolute inset-0 bg-gradient-to-br from-transparent to-black/20 rounded-2xl" />
+        <div className="absolute inset-0 bg-gradient-to-br from-transparent to-black/20 rounded-lg md:rounded-2xl" />
       )}
     </button>
   );

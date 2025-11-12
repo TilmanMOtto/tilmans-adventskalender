@@ -94,22 +94,22 @@ const Calendar = () => {
     >
       <div className="absolute inset-0 bg-background/10 backdrop-blur-sm" />
       
-      <div className="relative z-10 container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <div className="bg-background/80 backdrop-blur-md rounded-lg px-6 py-4 shadow-lg">
-            <h1 className="text-4xl font-bold text-foreground drop-shadow-lg">
+      <div className="relative z-10 container mx-auto px-4 py-4 md:py-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4 md:mb-8">
+          <div className="bg-background/80 backdrop-blur-md rounded-lg px-4 py-3 md:px-6 md:py-4 shadow-lg">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground drop-shadow-lg">
               November Advent Calendar
             </h1>
-            <p className="text-foreground/90 mt-2 font-medium drop-shadow">
+            <p className="text-sm md:text-base text-foreground/90 mt-1 md:mt-2 font-medium drop-shadow">
               Welcome, {profile?.username}! {isAdmin && "(Admin)"}
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 w-full md:w-auto">
             {isAdmin && (
               <Button 
                 onClick={() => navigate("/admin")}
                 variant="outline"
-                className="border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+                className="flex-1 md:flex-none text-sm md:text-base border-primary text-primary hover:bg-primary hover:text-primary-foreground"
               >
                 Admin Panel
               </Button>
@@ -117,7 +117,7 @@ const Calendar = () => {
             <Button 
               onClick={handleLogout}
               variant="outline"
-              className="border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+              className="flex-1 md:flex-none text-sm md:text-base border-primary text-primary hover:bg-primary hover:text-primary-foreground"
             >
               <LogOut className="w-4 h-4 mr-2" />
               Logout
