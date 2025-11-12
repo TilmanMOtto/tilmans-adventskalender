@@ -8,9 +8,10 @@ interface DoorModalProps {
   dayNumber: number;
   userId: string;
   onClose: () => void;
+  onDoorOpened?: () => void;
 }
 
-const DoorModal = ({ dayNumber, userId, onClose }: DoorModalProps) => {
+const DoorModal = ({ dayNumber, userId, onClose, onDoorOpened }: DoorModalProps) => {
   const [entry, setEntry] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -79,6 +80,9 @@ const DoorModal = ({ dayNumber, userId, onClose }: DoorModalProps) => {
     // Ignore duplicate errors (already opened)
     if (error && !error.message.includes("duplicate")) {
       console.error("Error marking as opened:", error);
+    } else {
+      // Notify parent that door was opened
+      onDoorOpened?.();
     }
   };
 
