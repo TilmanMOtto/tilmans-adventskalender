@@ -16,6 +16,29 @@ const CalendarGrid = ({ onDoorClick, userId }: CalendarGridProps) => {
     fetchData();
   }, [userId]);
 
+  useEffect(() => {
+    // Set up real-time subscription for progress updates
+    const channel = supabase
+      .channel('progress-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'user_progress',
+          filter: `user_id=eq.${userId}`
+        },
+        () => {
+          fetchData();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [userId]);
+
   const fetchData = async () => {
     const { data: entriesData } = await supabase
       .from("calendar_entries")
