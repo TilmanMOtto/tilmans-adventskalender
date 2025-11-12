@@ -15,7 +15,6 @@ const Calendar = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
-  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     checkUser();
@@ -125,17 +124,13 @@ const Calendar = () => {
           </div>
         </div>
 
-        <CalendarGrid key={refreshKey} onDoorClick={setSelectedDay} userId={user?.id} />
+        <CalendarGrid onDoorClick={setSelectedDay} userId={user?.id} />
         
         {selectedDay && (
           <DoorModal 
             dayNumber={selectedDay} 
             userId={user?.id}
-            onClose={() => setSelectedDay(null)}
-            onDoorOpened={() => {
-              setRefreshKey(prev => prev + 1);
-              setSelectedDay(null);
-            }}
+            onClose={() => setSelectedDay(null)} 
           />
         )}
       </div>
