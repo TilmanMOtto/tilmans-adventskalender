@@ -31,10 +31,10 @@ const Index = () => {
       
       <div className="relative z-10 text-center max-w-2xl mx-auto">
         <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent animate-fade-in">
-          November Advent Calendar
+          Tilman's Advent Calendar
         </h1>
         <p className="text-xl md:text-2xl text-foreground/80 mb-8 animate-fade-in">
-          Discover a new story and memory each day throughout November
+          Discover a new story and memory each day throughout December
         </p>
         <Button 
           onClick={() => navigate("/auth")}
