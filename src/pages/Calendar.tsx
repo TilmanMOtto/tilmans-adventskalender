@@ -12,6 +12,7 @@ const Calendar = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -44,13 +45,23 @@ const Calendar = () => {
   };
 
   const fetchProfile = async (userId: string) => {
-    const { data } = await supabase
+    const { data: profileData } = await supabase
       .from("profiles")
       .select("*")
       .eq("id", userId)
       .single();
     
-    setProfile(data);
+    setProfile(profileData);
+
+    // Check if user has admin role
+    const { data: rolesData } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .eq("role", "admin")
+      .maybeSingle();
+    
+    setIsAdmin(!!rolesData);
   };
 
   const handleLogout = async () => {
@@ -89,11 +100,11 @@ const Calendar = () => {
               November Advent Calendar
             </h1>
             <p className="text-muted-foreground mt-2">
-              Welcome, {profile?.username}! {profile?.is_admin && "(Admin)"}
+              Welcome, {profile?.username}! {isAdmin && "(Admin)"}
             </p>
           </div>
           <div className="flex gap-2">
-            {profile?.is_admin && (
+            {isAdmin && (
               <Button 
                 onClick={() => navigate("/admin")}
                 variant="outline"
