@@ -6,6 +6,7 @@ import { LogOut } from "lucide-react";
 import { toast } from "sonner";
 import CalendarGrid from "@/components/calendar/CalendarGrid";
 import DoorModal from "@/components/calendar/DoorModal";
+import SnowAnimation from "@/components/calendar/SnowAnimation";
 import heroBackground from "@/assets/hero-background.jpg";
 
 const Calendar = () => {
@@ -92,6 +93,7 @@ const Calendar = () => {
         backgroundAttachment: "fixed",
       }}
     >
+      <SnowAnimation />
       <div className="absolute inset-0 bg-background/10 backdrop-blur-sm" />
       
       <div className="relative z-10 container mx-auto px-4 py-4 md:py-8">

@@ -93,11 +93,20 @@ export default {
             transform: "perspective(1000px) rotateY(90deg)",
           },
         },
+        "snow": {
+          "0%": {
+            transform: "translateY(-10vh) translateX(0)",
+          },
+          "100%": {
+            transform: "translateY(100vh) translateX(10px)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "door-flip": "door-flip 0.6s ease-in-out",
+        "snow": "snow linear infinite",
       },
     },
   },
