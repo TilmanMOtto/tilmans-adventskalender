@@ -17,7 +17,7 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
   const [dayNumber, setDayNumber] = useState("");
   const [title, setTitle] = useState("");
   const [story, setStory] = useState("");
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
@@ -34,36 +34,43 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
     setDayNumber("");
     setTitle("");
     setStory("");
-    setImageFile(null);
+    setImageFiles([]);
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setImageFile(e.target.files[0]);
+    if (e.target.files) {
+      setImageFiles(Array.from(e.target.files));
     }
   };
 
-  const uploadImage = async (): Promise<string | null> => {
-    if (!imageFile) return null;
+  const uploadImages = async (): Promise<string[]> => {
+    if (imageFiles.length === 0) return [];
 
-    const fileExt = imageFile.name.split('.').pop();
-    const fileName = `${Date.now()}-${dayNumber}.${fileExt}`;
-    const filePath = `day-${dayNumber}/${fileName}`;
+    const uploadedUrls: string[] = [];
 
-    const { error: uploadError } = await supabase.storage
-      .from('calendar-images')
-      .upload(filePath, imageFile);
+    for (let i = 0; i < imageFiles.length; i++) {
+      const file = imageFiles[i];
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${i}-${dayNumber}.${fileExt}`;
+      const filePath = `day-${dayNumber}/${fileName}`;
 
-    if (uploadError) {
-      toast.error("Error uploading image: " + uploadError.message);
-      return null;
+      const { error: uploadError } = await supabase.storage
+        .from('calendar-images')
+        .upload(filePath, file);
+
+      if (uploadError) {
+        toast.error(`Error uploading image ${i + 1}: ${uploadError.message}`);
+        continue;
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('calendar-images')
+        .getPublicUrl(filePath);
+
+      uploadedUrls.push(publicUrl);
     }
 
-    const { data: { publicUrl } } = supabase.storage
-      .from('calendar-images')
-      .getPublicUrl(filePath);
-
-    return publicUrl;
+    return uploadedUrls;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -71,21 +78,23 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
     setUploading(true);
 
     try {
-      let imageUrl = editingEntry?.image_url;
+      let imageUrls = editingEntry?.image_urls || [];
       
-      if (imageFile) {
-        imageUrl = await uploadImage();
-        if (!imageUrl) {
+      if (imageFiles.length > 0) {
+        const newUrls = await uploadImages();
+        if (newUrls.length === 0) {
           setUploading(false);
           return;
         }
+        // Append new images to existing ones when editing
+        imageUrls = editingEntry ? [...imageUrls, ...newUrls] : newUrls;
       }
 
       const entryData = {
         day_number: parseInt(dayNumber),
         title,
         story,
-        image_url: imageUrl,
+        image_urls: imageUrls,
       };
 
       if (editingEntry) {
@@ -163,19 +172,25 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="image">Image</Label>
+            <Label htmlFor="image">Images (Multiple allowed)</Label>
             <div className="flex items-center gap-2">
               <Input
                 id="image"
                 type="file"
                 accept="image/*"
+                multiple
                 onChange={handleImageChange}
                 className="cursor-pointer"
               />
               <Upload className="w-5 h-5 text-muted-foreground" />
             </div>
-            {editingEntry?.image_url && !imageFile && (
-              <p className="text-sm text-muted-foreground">Current image will be kept if no new image is uploaded</p>
+            {imageFiles.length > 0 && (
+              <p className="text-sm text-muted-foreground">{imageFiles.length} image(s) selected</p>
+            )}
+            {editingEntry?.image_urls && editingEntry.image_urls.length > 0 && imageFiles.length === 0 && (
+              <p className="text-sm text-muted-foreground">
+                {editingEntry.image_urls.length} existing image(s). Upload new ones to add more.
+              </p>
             )}
           </div>
 

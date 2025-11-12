@@ -62,13 +62,17 @@ const DoorModal = ({ dayNumber, userId, onClose }: DoorModalProps) => {
               </DialogTitle>
             </DialogHeader>
             
-            {entry.image_url && (
-              <div className="relative w-full aspect-video rounded-lg overflow-hidden shadow-lg">
-                <img 
-                  src={entry.image_url} 
-                  alt={entry.title}
-                  className="w-full h-full object-cover"
-                />
+            {entry.image_urls && entry.image_urls.length > 0 && (
+              <div className="space-y-4">
+                {entry.image_urls.map((url: string, index: number) => (
+                  <div key={index} className="relative w-full aspect-video rounded-lg overflow-hidden shadow-lg">
+                    <img 
+                      src={url} 
+                      alt={`${entry.title} - Image ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ))}
               </div>
             )}
             

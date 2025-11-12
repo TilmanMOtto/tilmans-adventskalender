@@ -22,7 +22,7 @@ const CalendarDoor = ({ dayNumber, isOpened, isAvailable, hasContent, onClick }:
     return <Lock className="w-4 h-4" />;
   };
 
-  const canClick = isAvailable && hasContent && !isOpened;
+  const canClick = isAvailable && hasContent;
 
   return (
     <button

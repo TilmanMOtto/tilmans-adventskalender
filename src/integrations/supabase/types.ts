@@ -20,6 +20,7 @@ export type Database = {
           day_number: number
           id: string
           image_url: string | null
+          image_urls: Json | null
           story: string
           title: string
           updated_at: string | null
@@ -29,6 +30,7 @@ export type Database = {
           day_number: number
           id?: string
           image_url?: string | null
+          image_urls?: Json | null
           story: string
           title: string
           updated_at?: string | null
@@ -38,6 +40,7 @@ export type Database = {
           day_number?: number
           id?: string
           image_url?: string | null
+          image_urls?: Json | null
           story?: string
           title?: string
           updated_at?: string | null
