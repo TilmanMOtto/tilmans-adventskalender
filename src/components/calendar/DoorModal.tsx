@@ -52,6 +52,17 @@ const DoorModal = ({ dayNumber, userId, onClose, onDoorOpened }: DoorModalProps)
     }
   };
 
+  const parseStoryText = (text: string) => {
+    const parts = text.split('*');
+    return parts.map((part, index) => {
+      // Odd indices are between asterisks, so make them bold
+      if (index % 2 === 1) {
+        return <strong key={index}>{part}</strong>;
+      }
+      return <span key={index}>{part}</span>;
+    });
+  };
+
   return (
     <Dialog open={true} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -93,7 +104,7 @@ const DoorModal = ({ dayNumber, userId, onClose, onDoorOpened }: DoorModalProps)
             
             <div className="prose prose-lg max-w-none">
               <p className="text-foreground whitespace-pre-wrap leading-relaxed">
-                {entry.story}
+                {parseStoryText(entry.story)}
               </p>
             </div>
           </>
