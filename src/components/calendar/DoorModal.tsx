@@ -30,7 +30,7 @@ const DoorModal = ({ dayNumber, userId, onClose, onDoorOpened }: DoorModalProps)
       setEntry(data);
       await markAsOpened();
     } else {
-      toast.error("No content available for this day yet!");
+      toast.error("Noch kein Inhalt für diesen Tag verfügbar!");
       onClose();
     }
     setLoading(false);
@@ -74,7 +74,7 @@ const DoorModal = ({ dayNumber, userId, onClose, onDoorOpened }: DoorModalProps)
           <>
             <DialogHeader>
               <DialogTitle className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                Day {dayNumber}: {entry.title}
+                Tag {dayNumber}: {entry.title}
               </DialogTitle>
             </DialogHeader>
             
