@@ -172,12 +172,12 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="image">Bilder (Mehrere erlaubt)</Label>
+            <Label htmlFor="image">Bilder und Videos (Mehrere erlaubt)</Label>
             <div className="flex items-center gap-2">
               <Input
                 id="image"
                 type="file"
-                accept="image/*"
+                accept="image/*,video/*"
                 multiple
                 onChange={handleImageChange}
                 className="cursor-pointer"
@@ -185,11 +185,11 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
               <Upload className="w-5 h-5 text-muted-foreground" />
             </div>
             {imageFiles.length > 0 && (
-              <p className="text-sm text-muted-foreground">{imageFiles.length} Bild(er) ausgewählt</p>
+              <p className="text-sm text-muted-foreground">{imageFiles.length} Datei(en) ausgewählt</p>
             )}
             {editingEntry?.image_urls && editingEntry.image_urls.length > 0 && imageFiles.length === 0 && (
               <p className="text-sm text-muted-foreground">
-                {editingEntry.image_urls.length} vorhandene(s) Bild(er). Neue hochladen um weitere hinzuzufügen.
+                {editingEntry.image_urls.length} vorhandene(s) Datei(en). Neue hochladen um weitere hinzuzufügen.
               </p>
             )}
           </div>
