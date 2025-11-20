@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import heroBackground from "@/assets/hero-background.jpg";
 import tilmanPhoto from "@/assets/tilman-welcome.jpg";
+import SnowAnimation from "@/components/calendar/SnowAnimation";
 const Index = () => {
   const navigate = useNavigate();
   useEffect(() => {
@@ -24,6 +25,7 @@ const Index = () => {
     backgroundSize: "cover",
     backgroundPosition: "center"
   }}>
+      <SnowAnimation />
       <div className="absolute inset-0 bg-background/90 backdrop-blur-sm" />
       
       <div className="relative z-10 text-center max-w-2xl mx-auto">
