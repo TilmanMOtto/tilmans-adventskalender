@@ -38,8 +38,8 @@ const CalendarGrid = ({ onDoorClick, userId, isAdmin }: CalendarGridProps) => {
     if (now.getMonth() === 11) { // December is month 11 (0-indexed)
       return now.getDate();
     }
-    // If not December, allow all doors for testing
-    return totalDays;
+    // If not December, no doors available for regular users
+    return 0;
   };
 
   const currentDay = getCurrentDay();
