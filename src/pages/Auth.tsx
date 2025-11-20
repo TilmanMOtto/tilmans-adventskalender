@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import heroBackground from "@/assets/hero-background.jpg";
+import SnowAnimation from "@/components/calendar/SnowAnimation";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -62,6 +63,7 @@ const Auth = () => {
         backgroundPosition: "center",
       }}
     >
+      <SnowAnimation />
       <div className="absolute inset-0 bg-background/90 backdrop-blur-sm" />
       
       <Card className="w-full max-w-md relative z-10 shadow-2xl border-primary/20">
