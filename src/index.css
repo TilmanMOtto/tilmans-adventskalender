@@ -39,8 +39,8 @@ All colors MUST be HSL.
     --radius: 1rem;
     
     --door-locked: 220 15% 65%;
-    --door-available: 355 75% 45%;
-    --door-opened: 145 65% 35%;
+    --door-available: 355 50% 45%;
+    --door-opened: 145 45% 35%;
 
     --sidebar-background: 0 0% 98%;
 
@@ -89,8 +89,8 @@ All colors MUST be HSL.
     --ring: 355 75% 55%;
     
     --door-locked: 220 15% 40%;
-    --door-available: 355 75% 55%;
-    --door-opened: 145 65% 45%;
+    --door-available: 355 50% 55%;
+    --door-opened: 145 45% 45%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
