@@ -24,7 +24,7 @@ const SnowAnimation = () => {
   }, []);
 
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden z-[5]">
+    <div className="fixed inset-0 pointer-events-none overflow-hidden z-50">
       {snowflakes.map((flake) => (
         <div
           key={flake.id}
