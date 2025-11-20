@@ -83,11 +83,11 @@ const Calendar = () => {
       
       <div className="relative z-10 container mx-auto px-4 py-4 md:py-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4 md:mb-8">
-          <div className="flex items-center gap-3 md:gap-4">
+          <div className="flex items-stretch gap-3 md:gap-4">
             <img 
               src={tilmanPhoto} 
               alt="Tilman" 
-              className="w-12 h-12 md:w-16 md:h-16 rounded-full object-cover border-2 border-primary shadow-lg"
+              className="h-auto w-12 md:w-16 rounded-full object-cover shadow-lg self-stretch"
             />
             <div className="bg-background/80 backdrop-blur-md rounded-lg px-4 py-3 md:px-6 md:py-4 shadow-lg">
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground drop-shadow-lg">
