@@ -63,6 +63,11 @@ const DoorModal = ({ dayNumber, userId, onClose, onDoorOpened }: DoorModalProps)
     });
   };
 
+  const isVideoUrl = (url: string) => {
+    const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi', '.mkv'];
+    return videoExtensions.some(ext => url.toLowerCase().includes(ext));
+  };
+
   return (
     <Dialog open={true} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -84,11 +89,21 @@ const DoorModal = ({ dayNumber, userId, onClose, onDoorOpened }: DoorModalProps)
                   {entry.image_urls.map((url: string, index: number) => (
                     <CarouselItem key={index}>
                       <div className="relative w-full aspect-video rounded-lg overflow-hidden shadow-lg">
-                        <img 
-                          src={url} 
-                          alt={`${entry.title} - Image ${index + 1}`}
-                          className="w-full h-full object-cover"
-                        />
+                        {isVideoUrl(url) ? (
+                          <video 
+                            src={url}
+                            controls
+                            className="w-full h-full object-contain bg-black"
+                          >
+                            Ihr Browser unterstützt das Video-Tag nicht.
+                          </video>
+                        ) : (
+                          <img 
+                            src={url} 
+                            alt={`${entry.title} - Bild ${index + 1}`}
+                            className="w-full h-full object-cover"
+                          />
+                        )}
                       </div>
                     </CarouselItem>
                   ))}
