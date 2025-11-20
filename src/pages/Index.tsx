@@ -30,7 +30,7 @@ const Index = () => {
         <img 
           src={tilmanWelcome} 
           alt="Tilman mit Weihnachtsmütze" 
-          className="w-48 h-48 md:w-64 md:h-64 rounded-full mx-auto mb-8 object-cover object-[60%_35%] border-4 border-primary/30 shadow-2xl animate-fade-in scale-125"
+          className="w-48 h-48 md:w-64 md:h-64 rounded-full mx-auto mb-8 object-cover object-[60%_45%] border-4 border-primary/30 shadow-2xl animate-fade-in scale-150"
         />
         <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent animate-fade-in">Tilman's Adventskalender</h1>
         <p className="text-xl md:text-2xl text-foreground/80 mb-8 animate-fade-in">Ich nehme dich mit auf eine Reise durch mein Jahr 2025.       </p>
