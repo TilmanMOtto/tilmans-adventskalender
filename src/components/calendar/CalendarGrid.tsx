@@ -49,6 +49,10 @@ const CalendarGrid = ({ onDoorClick, userId, isAdmin }: CalendarGridProps) => {
   };
 
   const isDoorAvailable = (day: number) => {
+    // Special case: Day 24 is always locked for admins
+    if (isAdmin && day === 24) {
+      return false;
+    }
     return isAdmin || day <= currentDay;
   };
 
