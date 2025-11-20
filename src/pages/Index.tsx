@@ -38,7 +38,7 @@ const Index = () => {
           <img
             src={tilmanPhoto}
             alt="Tilman mit Weihnachtsmütze"
-            className="w-48 h-48 md:w-56 md:h-56 rounded-full object-cover border-4 border-primary/30 shadow-2xl hover:scale-105 transition-transform duration-300"
+            className="w-56 h-56 md:w-72 md:h-72 rounded-full object-cover border-4 border-primary/30 shadow-2xl hover:scale-105 transition-transform duration-300"
           />
         </div>
         <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent animate-fade-in">
