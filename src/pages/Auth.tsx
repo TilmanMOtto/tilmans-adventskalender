@@ -67,7 +67,7 @@ const Auth = () => {
       <Card className="w-full max-w-md relative z-10 shadow-2xl border-primary/20">
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            Advent Calendar
+            Adventskalender
           </CardTitle>
           <CardDescription className="text-base">
             {isLogin ? "Willkommen zurück! Melde dich an um fortzufahren" : "Erstelle dein Konto um zu beginnen"}
