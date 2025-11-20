@@ -68,7 +68,7 @@ const Calendar = () => {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    toast.success("Logged out successfully");
+    toast.success("Erfolgreich abgemeldet");
     navigate("/auth");
   };
 
@@ -77,7 +77,7 @@ const Calendar = () => {
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Loading calendar...</p>
+          <p className="mt-4 text-muted-foreground">Lade Kalender...</p>
         </div>
       </div>
     );
@@ -103,7 +103,7 @@ const Calendar = () => {
               Tilman's Advent Calendar
             </h1>
             <p className="text-sm md:text-base text-foreground/90 mt-1 md:mt-2 font-medium drop-shadow">
-              Welcome, {profile?.username}! {isAdmin && "(Admin)"}
+              Willkommen, {profile?.username}! {isAdmin && "(Admin)"}
             </p>
           </div>
           <div className="flex gap-2 w-full md:w-auto">

@@ -59,7 +59,7 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
         .upload(filePath, file);
 
       if (uploadError) {
-        toast.error(`Error uploading image ${i + 1}: ${uploadError.message}`);
+        toast.error(`Fehler beim Hochladen von Bild ${i + 1}: ${uploadError.message}`);
         continue;
       }
 
@@ -104,20 +104,20 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
           .eq("id", editingEntry.id);
 
         if (error) throw error;
-        toast.success("Entry updated successfully!");
+        toast.success("Eintrag erfolgreich aktualisiert!");
       } else {
         const { error } = await supabase
           .from("calendar_entries")
           .insert(entryData);
 
         if (error) throw error;
-        toast.success("Entry created successfully!");
+        toast.success("Eintrag erfolgreich erstellt!");
       }
 
       resetForm();
       onSaveSuccess();
     } catch (error: any) {
-      toast.error(error.message || "An error occurred");
+      toast.error(error.message || "Ein Fehler ist aufgetreten");
     } finally {
       setUploading(false);
     }
@@ -134,12 +134,12 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="dayNumber">Day Number (1-30)</Label>
+            <Label htmlFor="dayNumber">Tag Nummer (1-24)</Label>
             <Input
               id="dayNumber"
               type="number"
               min="1"
-              max="30"
+              max="24"
               value={dayNumber}
               onChange={(e) => setDayNumber(e.target.value)}
               required
@@ -148,31 +148,31 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="title">Title</Label>
+            <Label htmlFor="title">Titel</Label>
             <Input
               id="title"
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
-              placeholder="A special memory..."
+              placeholder="Eine besondere Erinnerung..."
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="story">Story</Label>
+            <Label htmlFor="story">Geschichte</Label>
             <Textarea
               id="story"
               value={story}
               onChange={(e) => setStory(e.target.value)}
               required
-              placeholder="Tell your story here..."
+              placeholder="Erzähle deine Geschichte hier..."
               rows={6}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="image">Images (Multiple allowed)</Label>
+            <Label htmlFor="image">Bilder (Mehrere erlaubt)</Label>
             <div className="flex items-center gap-2">
               <Input
                 id="image"
@@ -185,11 +185,11 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
               <Upload className="w-5 h-5 text-muted-foreground" />
             </div>
             {imageFiles.length > 0 && (
-              <p className="text-sm text-muted-foreground">{imageFiles.length} image(s) selected</p>
+              <p className="text-sm text-muted-foreground">{imageFiles.length} Bild(er) ausgewählt</p>
             )}
             {editingEntry?.image_urls && editingEntry.image_urls.length > 0 && imageFiles.length === 0 && (
               <p className="text-sm text-muted-foreground">
-                {editingEntry.image_urls.length} existing image(s). Upload new ones to add more.
+                {editingEntry.image_urls.length} vorhandene(s) Bild(er). Neue hochladen um weitere hinzuzufügen.
               </p>
             )}
           </div>
@@ -200,7 +200,7 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
               disabled={uploading}
               className="flex-1"
             >
-              {uploading ? "Saving..." : editingEntry ? "Update Entry" : "Create Entry"}
+              {uploading ? "Speichert..." : editingEntry ? "Eintrag aktualisieren" : "Eintrag erstellen"}
             </Button>
             {editingEntry && (
               <Button 
@@ -211,7 +211,7 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
                   onSaveSuccess();
                 }}
               >
-                Cancel
+                Abbrechen
               </Button>
             )}
           </div>

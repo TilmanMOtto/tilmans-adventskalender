@@ -30,7 +30,7 @@ const AdminList = ({ onEdit, refreshTrigger }: AdminListProps) => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this entry?")) return;
+    if (!confirm("Bist du sicher, dass du diesen Eintrag löschen möchtest?")) return;
 
     const { error } = await supabase
       .from("calendar_entries")
@@ -38,11 +38,11 @@ const AdminList = ({ onEdit, refreshTrigger }: AdminListProps) => {
       .eq("id", id);
 
     if (error) {
-      toast.error("Error deleting entry");
+      toast.error("Fehler beim Löschen des Eintrags");
       return;
     }
 
-    toast.success("Entry deleted successfully");
+    toast.success("Eintrag erfolgreich gelöscht");
     fetchEntries();
   };
 
@@ -50,11 +50,11 @@ const AdminList = ({ onEdit, refreshTrigger }: AdminListProps) => {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Existing Entries</CardTitle>
+          <CardTitle>Vorhandene Einträge</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center py-8 text-muted-foreground">
-            Loading entries...
+            Lade Einträge...
           </div>
         </CardContent>
       </Card>
@@ -64,15 +64,15 @@ const AdminList = ({ onEdit, refreshTrigger }: AdminListProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Existing Entries</CardTitle>
+        <CardTitle>Vorhandene Einträge</CardTitle>
         <CardDescription>
-          {entries.length} of 30 days configured
+          {entries.length} von 24 Tagen konfiguriert
         </CardDescription>
       </CardHeader>
       <CardContent>
         {entries.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
-            No entries yet. Create your first one!
+            Noch keine Einträge. Erstelle deinen ersten!
           </div>
         ) : (
           <div className="space-y-3 max-h-[600px] overflow-y-auto">
@@ -83,7 +83,7 @@ const AdminList = ({ onEdit, refreshTrigger }: AdminListProps) => {
               >
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-primary">Day {entry.day_number}</span>
+                    <span className="font-bold text-primary">Tag {entry.day_number}</span>
                     <span className="text-sm">•</span>
                     <span className="font-semibold">{entry.title}</span>
                   </div>

@@ -28,7 +28,7 @@ const Auth = () => {
         });
 
         if (error) throw error;
-        toast.success("Welcome back!");
+        toast.success("Willkommen zurück!");
         navigate("/calendar");
       } else {
         const { error: signUpError } = await supabase.auth.signUp({
@@ -43,11 +43,11 @@ const Auth = () => {
         });
 
         if (signUpError) throw signUpError;
-        toast.success("Account created! Welcome!");
+        toast.success("Konto erstellt! Willkommen!");
         navigate("/calendar");
       }
     } catch (error: any) {
-      toast.error(error.message || "An error occurred");
+      toast.error(error.message || "Ein Fehler ist aufgetreten");
     } finally {
       setLoading(false);
     }
@@ -70,18 +70,18 @@ const Auth = () => {
             Advent Calendar
           </CardTitle>
           <CardDescription className="text-base">
-            {isLogin ? "Welcome back! Sign in to continue" : "Create your account to get started"}
+            {isLogin ? "Willkommen zurück! Melde dich an um fortzufahren" : "Erstelle dein Konto um zu beginnen"}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleAuth} className="space-y-4">
             {!isLogin && (
               <div className="space-y-2">
-                <Label htmlFor="username">Username</Label>
+                <Label htmlFor="username">Benutzername</Label>
                 <Input
                   id="username"
                   type="text"
-                  placeholder="Enter your username"
+                  placeholder="Gib deinen Benutzernamen ein"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   required={!isLogin}
@@ -90,11 +90,11 @@ const Auth = () => {
               </div>
             )}
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">E-Mail</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="Enter your email"
+                placeholder="Gib deine E-Mail ein"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -102,11 +102,11 @@ const Auth = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">Passwort</Label>
               <Input
                 id="password"
                 type="password"
-                placeholder="Enter your password"
+                placeholder="Gib dein Passwort ein"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -119,7 +119,7 @@ const Auth = () => {
               className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
               disabled={loading}
             >
-              {loading ? "Loading..." : isLogin ? "Sign In" : "Sign Up"}
+              {loading ? "Lädt..." : isLogin ? "Anmelden" : "Registrieren"}
             </Button>
           </form>
           
@@ -129,7 +129,7 @@ const Auth = () => {
               onClick={() => setIsLogin(!isLogin)}
               className="text-sm text-primary hover:text-primary/80 font-medium"
             >
-              {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
+              {isLogin ? "Noch kein Konto? Registrieren" : "Bereits ein Konto? Anmelden"}
             </button>
           </div>
         </CardContent>

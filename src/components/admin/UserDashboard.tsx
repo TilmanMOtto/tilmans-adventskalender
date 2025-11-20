@@ -78,7 +78,7 @@ const UserDashboard = () => {
         <CardContent className="pt-6">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-            <p className="mt-4 text-muted-foreground">Loading user progress...</p>
+            <p className="mt-4 text-muted-foreground">Lade Benutzerfortschritt...</p>
           </div>
         </CardContent>
       </Card>
@@ -90,7 +90,7 @@ const UserDashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+            <CardTitle className="text-sm font-medium">Benutzer gesamt</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{usersProgress.length}</div>
@@ -99,7 +99,7 @@ const UserDashboard = () => {
         
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">Average Completion</CardTitle>
+            <CardTitle className="text-sm font-medium">Durchschnittliche Vollständigkeit</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -116,7 +116,7 @@ const UserDashboard = () => {
 
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">Total Doors Opened</CardTitle>
+            <CardTitle className="text-sm font-medium">Türen gesamt geöffnet</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -128,16 +128,16 @@ const UserDashboard = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>User Progress</CardTitle>
+          <CardTitle>Benutzerfortschritt</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Username</TableHead>
-                  <TableHead>Progress</TableHead>
-                  <TableHead className="hidden md:table-cell">Doors Opened</TableHead>
+                  <TableHead>Benutzername</TableHead>
+                  <TableHead>Fortschritt</TableHead>
+                  <TableHead className="hidden md:table-cell">Türen geöffnet</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

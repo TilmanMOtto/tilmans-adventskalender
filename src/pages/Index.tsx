@@ -34,14 +34,14 @@ const Index = () => {
           Tilman's Advent Calendar
         </h1>
         <p className="text-xl md:text-2xl text-foreground/80 mb-8 animate-fade-in">
-          Discover a new story and memory each day throughout December
+          Entdecke jeden Tag im Dezember eine neue Geschichte und Erinnerung
         </p>
         <Button 
           onClick={() => navigate("/auth")}
           size="lg"
           className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-lg px-8 py-6 animate-fade-in shadow-xl hover:shadow-2xl transition-all hover:scale-105"
         >
-          Get Started
+          Los geht's
         </Button>
       </div>
     </div>
