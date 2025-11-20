@@ -8,6 +8,7 @@ import CalendarGrid from "@/components/calendar/CalendarGrid";
 import DoorModal from "@/components/calendar/DoorModal";
 import SnowAnimation from "@/components/calendar/SnowAnimation";
 import heroBackground from "@/assets/hero-background.jpg";
+import tilmanPhoto from "@/assets/tilman-welcome.jpg";
 const Calendar = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
@@ -82,13 +83,20 @@ const Calendar = () => {
       
       <div className="relative z-10 container mx-auto px-4 py-4 md:py-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4 md:mb-8">
-          <div className="bg-background/80 backdrop-blur-md rounded-lg px-4 py-3 md:px-6 md:py-4 shadow-lg">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground drop-shadow-lg">
-              Tilman's Adventskalender
-            </h1>
-            <p className="text-sm md:text-base text-foreground/90 mt-1 md:mt-2 font-medium drop-shadow">
-              Willkommen, {profile?.username}! {isAdmin && "(Admin)"}
-            </p>
+          <div className="flex items-center gap-3 md:gap-4">
+            <img 
+              src={tilmanPhoto} 
+              alt="Tilman" 
+              className="w-12 h-12 md:w-16 md:h-16 rounded-full object-cover border-2 border-primary shadow-lg"
+            />
+            <div className="bg-background/80 backdrop-blur-md rounded-lg px-4 py-3 md:px-6 md:py-4 shadow-lg">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground drop-shadow-lg">
+                Tilman's Adventskalender
+              </h1>
+              <p className="text-sm md:text-base text-foreground/90 mt-1 md:mt-2 font-medium drop-shadow">
+                Willkommen, {profile?.username}! {isAdmin && "(Admin)"}
+              </p>
+            </div>
           </div>
           <div className="flex gap-2 w-full md:w-auto">
             {isAdmin && <Button onClick={() => navigate("/admin")} className="flex-1 md:flex-none text-sm md:text-base bg-door-available hover:bg-door-available/90 text-white border-2 border-door-available shadow-lg hover:shadow-xl rounded-lg md:rounded-2xl transition-all duration-300">
