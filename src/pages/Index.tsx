@@ -29,9 +29,7 @@ const Index = () => {
         <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent animate-fade-in">
           Tilman's Adventskalender    
         </h1>
-        <p className="text-xl md:text-2xl text-foreground/80 mb-8 animate-fade-in">
-          Ich nehme dich mit auf eine Reise durch mein Jahr 2025.                      
-        </p>
+        <p className="text-xl md:text-2xl text-foreground/80 mb-8 animate-fade-in">Ich nehme dich mit auf eine Reise durch mein Jahr 2025.       </p>
         <Button onClick={() => navigate("/auth")} size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-lg px-8 py-6 animate-fade-in shadow-xl hover:shadow-2xl transition-all hover:scale-105">
           Los geht's
         </Button>
