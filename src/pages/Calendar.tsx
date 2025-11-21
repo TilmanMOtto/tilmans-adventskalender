@@ -7,10 +7,13 @@ import { toast } from "sonner";
 import CalendarGrid from "@/components/calendar/CalendarGrid";
 import DoorModal from "@/components/calendar/DoorModal";
 import SnowAnimation from "@/components/calendar/SnowAnimation";
+import LanguageToggle from "@/components/LanguageToggle";
+import { useLanguage } from "@/contexts/LanguageContext";
 import heroBackground from "@/assets/hero-background.jpg";
 import tilmanPhoto from "@/assets/tilman-welcome.jpg";
 const Calendar = () => {
   const navigate = useNavigate();
+  const { language, t } = useLanguage();
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -61,7 +64,7 @@ const Calendar = () => {
   };
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    toast.success("Erfolgreich abgemeldet");
+    toast.success(language === 'de' ? "Erfolgreich abgemeldet" : "Successfully logged out");
     navigate("/auth");
   };
   if (loading) {
@@ -91,20 +94,21 @@ const Calendar = () => {
             />
             <div className="bg-background/80 backdrop-blur-md rounded-lg px-4 py-3 md:px-6 md:py-4 shadow-lg">
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground drop-shadow-lg">
-                Tilman's Adventskalender
+                {t('calendar.title')}
               </h1>
               <p className="text-sm md:text-base text-foreground/90 mt-1 md:mt-2 font-medium drop-shadow">
-                Willkommen, {profile?.username}! {isAdmin && "(Admin)"}
+                {t('calendar.welcome')}, {profile?.username}! {isAdmin && `(${t('calendar.admin')})`}
               </p>
             </div>
           </div>
           <div className="flex gap-2 w-full md:w-auto">
+            <LanguageToggle />
             {isAdmin && <Button onClick={() => navigate("/admin")} className="flex-1 md:flex-none text-sm md:text-base bg-door-available hover:bg-door-available/90 text-white border-2 border-door-available shadow-lg hover:shadow-xl rounded-lg md:rounded-2xl transition-all duration-300">
-                Admin Panel
+                {t('calendar.adminPanel')}
               </Button>}
             <Button onClick={handleLogout} className="flex-1 md:flex-none text-sm md:text-base bg-door-locked hover:bg-door-locked/90 text-white border-2 border-door-locked shadow-lg hover:shadow-xl rounded-lg md:rounded-2xl transition-all duration-300">
               <LogOut className="w-4 h-4 mr-2" />
-              Logout
+              {t('calendar.logout')}
             </Button>
           </div>
         </div>
