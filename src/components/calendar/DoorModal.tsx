@@ -86,9 +86,9 @@ const DoorModal = ({ dayNumber, userId, onClose, onDoorOpened }: DoorModalProps)
             {entry.image_urls && entry.image_urls.length > 0 && (
               <Carousel className="w-full">
                 <CarouselContent>
-                  {entry.image_urls.map((url: string, index: number) => (
+                   {entry.image_urls.map((url: string, index: number) => (
                     <CarouselItem key={index}>
-                      <div className="relative w-full aspect-video rounded-lg overflow-hidden shadow-lg">
+                      <div className="relative w-full max-h-[60vh] rounded-lg overflow-hidden shadow-lg bg-muted/20 flex items-center justify-center">
                         {isVideoUrl(url) ? (
                           <video 
                             src={url}
@@ -101,7 +101,7 @@ const DoorModal = ({ dayNumber, userId, onClose, onDoorOpened }: DoorModalProps)
                           <img 
                             src={url} 
                             alt={`${entry.title} - Bild ${index + 1}`}
-                            className="w-full h-full object-cover"
+                            className="w-full max-h-[60vh] object-contain"
                           />
                         )}
                       </div>
