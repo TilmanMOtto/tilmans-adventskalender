@@ -153,18 +153,22 @@ const AdminList = ({ onEdit, refreshTrigger }: AdminListProps) => {
     setEntries(newEntries);
 
     try {
-      // Update all day_numbers based on new order
-      const updates = newEntries.map((entry, index) => ({
-        id: entry.id,
-        day_number: index + 1,
-      }));
-
-      // Batch update all entries
-      for (const update of updates) {
+      // Step 1: Set all entries to temporary day_numbers to avoid unique constraint violations
+      for (let i = 0; i < newEntries.length; i++) {
         const { error } = await supabase
           .from("calendar_entries")
-          .update({ day_number: update.day_number })
-          .eq("id", update.id);
+          .update({ day_number: 1000 + i })
+          .eq("id", newEntries[i].id);
+
+        if (error) throw error;
+      }
+
+      // Step 2: Update all entries to their final day_numbers
+      for (let i = 0; i < newEntries.length; i++) {
+        const { error } = await supabase
+          .from("calendar_entries")
+          .update({ day_number: i + 1 })
+          .eq("id", newEntries[i].id);
 
         if (error) throw error;
       }
