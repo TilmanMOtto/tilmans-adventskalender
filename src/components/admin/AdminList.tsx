@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, ArrowUp, ArrowDown } from "lucide-react";
 import { toast } from "sonner";
 
 interface AdminListProps {
@@ -14,9 +14,13 @@ interface EntryItemProps {
   entry: any;
   onEdit: (entry: any) => void;
   onDelete: (id: string) => void;
+  onMoveUp: (entry: any) => void;
+  onMoveDown: (entry: any) => void;
+  isFirst: boolean;
+  isLast: boolean;
 }
 
-const EntryItem = ({ entry, onEdit, onDelete }: EntryItemProps) => {
+const EntryItem = ({ entry, onEdit, onDelete, onMoveUp, onMoveDown, isFirst, isLast }: EntryItemProps) => {
   return (
     <div className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
       <div className="flex items-center gap-3 flex-1">
@@ -32,6 +36,22 @@ const EntryItem = ({ entry, onEdit, onDelete }: EntryItemProps) => {
         </div>
       </div>
       <div className="flex gap-2 ml-4">
+        <Button
+          size="icon"
+          variant="outline"
+          onClick={() => onMoveUp(entry)}
+          disabled={isFirst}
+        >
+          <ArrowUp className="w-4 h-4" />
+        </Button>
+        <Button
+          size="icon"
+          variant="outline"
+          onClick={() => onMoveDown(entry)}
+          disabled={isLast}
+        >
+          <ArrowDown className="w-4 h-4" />
+        </Button>
         <Button
           size="icon"
           variant="outline"
@@ -87,6 +107,55 @@ const AdminList = ({ onEdit, refreshTrigger }: AdminListProps) => {
     fetchEntries();
   };
 
+  const handleMoveUp = async (entry: any) => {
+    const currentIndex = entries.findIndex(e => e.id === entry.id);
+    if (currentIndex <= 0) return;
+
+    const previousEntry = entries[currentIndex - 1];
+    await swapEntries(entry, previousEntry);
+  };
+
+  const handleMoveDown = async (entry: any) => {
+    const currentIndex = entries.findIndex(e => e.id === entry.id);
+    if (currentIndex >= entries.length - 1) return;
+
+    const nextEntry = entries[currentIndex + 1];
+    await swapEntries(entry, nextEntry);
+  };
+
+  const swapEntries = async (entry1: any, entry2: any) => {
+    const tempDayNumber = 9999;
+
+    // Use temporary value to avoid unique constraint violation
+    const { error: tempError } = await supabase
+      .from("calendar_entries")
+      .update({ day_number: tempDayNumber })
+      .eq("id", entry1.id);
+
+    if (tempError) {
+      toast.error("Fehler beim Verschieben des Eintrags");
+      return;
+    }
+
+    const { error: error1 } = await supabase
+      .from("calendar_entries")
+      .update({ day_number: entry2.day_number })
+      .eq("id", entry1.id);
+
+    const { error: error2 } = await supabase
+      .from("calendar_entries")
+      .update({ day_number: entry1.day_number })
+      .eq("id", entry2.id);
+
+    if (error1 || error2) {
+      toast.error("Fehler beim Verschieben des Eintrags");
+      return;
+    }
+
+    toast.success("Eintrag verschoben");
+    fetchEntries();
+  };
+
   if (loading) {
     return (
       <Card>
@@ -117,12 +186,16 @@ const AdminList = ({ onEdit, refreshTrigger }: AdminListProps) => {
           </div>
         ) : (
           <div className="space-y-3 max-h-[600px] overflow-y-auto">
-            {entries.map((entry) => (
+            {entries.map((entry, index) => (
               <EntryItem
                 key={entry.id}
                 entry={entry}
                 onEdit={onEdit}
                 onDelete={handleDelete}
+                onMoveUp={handleMoveUp}
+                onMoveDown={handleMoveDown}
+                isFirst={index === 0}
+                isLast={index === entries.length - 1}
               />
             ))}
           </div>
