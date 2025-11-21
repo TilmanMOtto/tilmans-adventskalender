@@ -18,6 +18,7 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
   const [title, setTitle] = useState("");
   const [story, setStory] = useState("");
   const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [audioFile, setAudioFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
@@ -35,11 +36,18 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
     setTitle("");
     setStory("");
     setImageFiles([]);
+    setAudioFile(null);
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setImageFiles(Array.from(e.target.files));
+    }
+  };
+
+  const handleAudioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setAudioFile(e.target.files[0]);
     }
   };
 
@@ -73,6 +81,29 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
     return uploadedUrls;
   };
 
+  const uploadAudio = async (): Promise<string | null> => {
+    if (!audioFile) return null;
+
+    const fileExt = audioFile.name.split('.').pop();
+    const fileName = `${Date.now()}-audio-${dayNumber}.${fileExt}`;
+    const filePath = `day-${dayNumber}/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('calendar-images')
+      .upload(filePath, audioFile);
+
+    if (uploadError) {
+      toast.error(`Fehler beim Hochladen der Audio-Datei: ${uploadError.message}`);
+      return null;
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('calendar-images')
+      .getPublicUrl(filePath);
+
+    return publicUrl;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setUploading(true);
@@ -90,11 +121,20 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
         imageUrls = editingEntry ? [...imageUrls, ...newUrls] : newUrls;
       }
 
+      let audioUrl = editingEntry?.audio_url || null;
+      if (audioFile) {
+        const newAudioUrl = await uploadAudio();
+        if (newAudioUrl) {
+          audioUrl = newAudioUrl;
+        }
+      }
+
       const entryData = {
         day_number: parseInt(dayNumber),
         title,
         story,
         image_urls: imageUrls,
+        audio_url: audioUrl,
       };
 
       if (editingEntry) {
@@ -191,6 +231,26 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
               <p className="text-sm text-muted-foreground">
                 {editingEntry.image_urls.length} vorhandene(s) Datei(en). Neue hochladen um weitere hinzuzufügen.
               </p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="audio">Audio-Datei (optional)</Label>
+            <div className="flex items-center gap-2">
+              <Input
+                id="audio"
+                type="file"
+                accept="audio/*"
+                onChange={handleAudioChange}
+                className="cursor-pointer"
+              />
+              <Upload className="w-5 h-5 text-muted-foreground" />
+            </div>
+            {audioFile && (
+              <p className="text-sm text-muted-foreground">Audio-Datei ausgewählt: {audioFile.name}</p>
+            )}
+            {editingEntry?.audio_url && !audioFile && (
+              <p className="text-sm text-muted-foreground">Vorhandene Audio-Datei. Neue hochladen zum Ersetzen.</p>
             )}
           </div>
 

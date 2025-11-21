@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       calendar_entries: {
         Row: {
+          audio_url: string | null
           created_at: string | null
           day_number: number
           id: string
@@ -26,6 +27,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          audio_url?: string | null
           created_at?: string | null
           day_number: number
           id?: string
@@ -36,6 +38,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          audio_url?: string | null
           created_at?: string | null
           day_number?: number
           id?: string
