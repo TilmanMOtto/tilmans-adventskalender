@@ -66,10 +66,14 @@ const ExportCalendar = () => {
             const imageUrl = imageUrls[i];
             const fileName = imageUrl.split('/').pop() || `image-${i + 1}`;
             
+            // Extract path from full URL (remove base URL and bucket name)
+            const pathMatch = imageUrl.match(/calendar-images\/(.+)$/);
+            const filePath = pathMatch ? pathMatch[1] : imageUrl;
+            
             try {
               const { data: imageData, error: imageError } = await supabase.storage
                 .from("calendar-images")
-                .download(imageUrl);
+                .download(filePath);
 
               if (imageError) throw imageError;
               if (imageData) {
@@ -85,10 +89,14 @@ const ExportCalendar = () => {
         if (entry.audio_url) {
           const fileName = entry.audio_url.split('/').pop() || `day-${entry.day_number}.mp3`;
           
+          // Extract path from full URL (remove base URL and bucket name)
+          const pathMatch = entry.audio_url.match(/calendar-images\/(.+)$/);
+          const filePath = pathMatch ? pathMatch[1] : entry.audio_url;
+          
           try {
             const { data: audioData, error: audioError } = await supabase.storage
               .from("calendar-images")
-              .download(entry.audio_url);
+              .download(filePath);
 
             if (audioError) throw audioError;
             if (audioData) {
