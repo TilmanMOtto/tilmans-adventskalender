@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import AdminForm from "@/components/admin/AdminForm";
 import AdminList from "@/components/admin/AdminList";
 import UserDashboard from "@/components/admin/UserDashboard";
+import ExportCalendar from "@/components/admin/ExportCalendar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Admin = () => {
@@ -79,9 +80,10 @@ const Admin = () => {
         </div>
 
         <Tabs defaultValue="content" className="space-y-6">
-          <TabsList className="grid w-full max-w-md grid-cols-2">
+          <TabsList className="grid w-full max-w-2xl grid-cols-3">
             <TabsTrigger value="content">Inhaltsverwaltung</TabsTrigger>
             <TabsTrigger value="progress">Benutzerfortschritt</TabsTrigger>
+            <TabsTrigger value="export">Export</TabsTrigger>
           </TabsList>
 
           <TabsContent value="content">
@@ -99,6 +101,10 @@ const Admin = () => {
 
           <TabsContent value="progress">
             <UserDashboard />
+          </TabsContent>
+
+          <TabsContent value="export">
+            <ExportCalendar />
           </TabsContent>
         </Tabs>
       </div>
