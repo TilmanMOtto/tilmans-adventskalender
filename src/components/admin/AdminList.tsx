@@ -2,24 +2,67 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, GripVertical } from "lucide-react";
 import { toast } from "sonner";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 interface AdminListProps {
   onEdit: (entry: any) => void;
   refreshTrigger: number;
 }
 
-interface EntryItemProps {
+interface SortableItemProps {
   entry: any;
   onEdit: (entry: any) => void;
   onDelete: (id: string) => void;
 }
 
-const EntryItem = ({ entry, onEdit, onDelete }: EntryItemProps) => {
+const SortableItem = ({ entry, onEdit, onDelete }: SortableItemProps) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: entry.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
   return (
-    <div className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+    >
       <div className="flex items-center gap-3 flex-1">
+        <button
+          className="cursor-grab active:cursor-grabbing touch-none"
+          {...attributes}
+          {...listeners}
+        >
+          <GripVertical className="w-5 h-5 text-muted-foreground" />
+        </button>
         <div className="flex-1">
           <div className="flex items-center gap-2">
             <span className="font-bold text-primary">Tag {entry.day_number}</span>
@@ -55,6 +98,13 @@ const AdminList = ({ onEdit, refreshTrigger }: AdminListProps) => {
   const [entries, setEntries] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
   useEffect(() => {
     fetchEntries();
   }, [refreshTrigger]);
@@ -87,6 +137,57 @@ const AdminList = ({ onEdit, refreshTrigger }: AdminListProps) => {
     fetchEntries();
   };
 
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (!over || active.id === over.id) {
+      return;
+    }
+
+    const oldIndex = entries.findIndex((entry) => entry.id === active.id);
+    const newIndex = entries.findIndex((entry) => entry.id === over.id);
+
+    if (oldIndex === -1 || newIndex === -1) return;
+
+    const newEntries = arrayMove(entries, oldIndex, newIndex);
+    setEntries(newEntries);
+
+    const movedEntry = entries[oldIndex];
+    const targetEntry = entries[newIndex];
+
+    try {
+      const tempDayNumber = 9999;
+
+      const { error: error1 } = await supabase
+        .from("calendar_entries")
+        .update({ day_number: tempDayNumber })
+        .eq("id", movedEntry.id);
+
+      if (error1) throw error1;
+
+      const { error: error2 } = await supabase
+        .from("calendar_entries")
+        .update({ day_number: movedEntry.day_number })
+        .eq("id", targetEntry.id);
+
+      if (error2) throw error2;
+
+      const { error: error3 } = await supabase
+        .from("calendar_entries")
+        .update({ day_number: targetEntry.day_number })
+        .eq("id", movedEntry.id);
+
+      if (error3) throw error3;
+
+      toast.success("Reihenfolge erfolgreich aktualisiert");
+      fetchEntries();
+    } catch (error) {
+      console.error("Error updating order:", error);
+      toast.error("Fehler beim Aktualisieren der Reihenfolge");
+      fetchEntries();
+    }
+  };
+
   if (loading) {
     return (
       <Card>
@@ -116,16 +217,27 @@ const AdminList = ({ onEdit, refreshTrigger }: AdminListProps) => {
             Noch keine Einträge. Erstelle deinen ersten!
           </div>
         ) : (
-          <div className="space-y-3 max-h-[600px] overflow-y-auto">
-            {entries.map((entry) => (
-              <EntryItem
-                key={entry.id}
-                entry={entry}
-                onEdit={onEdit}
-                onDelete={handleDelete}
-              />
-            ))}
-          </div>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={entries.map((e) => e.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              <div className="space-y-3 max-h-[600px] overflow-y-auto">
+                {entries.map((entry) => (
+                  <SortableItem
+                    key={entry.id}
+                    entry={entry}
+                    onEdit={onEdit}
+                    onDelete={handleDelete}
+                  />
+                ))}
+              </div>
+            </SortableContext>
+          </DndContext>
         )}
       </CardContent>
     </Card>
