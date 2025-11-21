@@ -152,26 +152,37 @@ const AdminList = ({ onEdit, refreshTrigger }: AdminListProps) => {
     const newEntries = arrayMove(entries, oldIndex, newIndex);
     setEntries(newEntries);
 
+    // Swap day_numbers in database (only swap the two affected entries)
+    const movedEntry = entries[oldIndex];
+    const targetEntry = entries[newIndex];
+
     try {
-      // Step 1: Set all entries to temporary day_numbers to avoid unique constraint violations
-      for (let i = 0; i < newEntries.length; i++) {
-        const { error } = await supabase
-          .from("calendar_entries")
-          .update({ day_number: 1000 + i })
-          .eq("id", newEntries[i].id);
+      // Use a temporary day_number to avoid unique constraint violation
+      const tempDayNumber = 9999;
 
-        if (error) throw error;
-      }
+      // Step 1: Set moved entry to temp value
+      const { error: error1 } = await supabase
+        .from("calendar_entries")
+        .update({ day_number: tempDayNumber })
+        .eq("id", movedEntry.id);
 
-      // Step 2: Update all entries to their final day_numbers
-      for (let i = 0; i < newEntries.length; i++) {
-        const { error } = await supabase
-          .from("calendar_entries")
-          .update({ day_number: i + 1 })
-          .eq("id", newEntries[i].id);
+      if (error1) throw error1;
 
-        if (error) throw error;
-      }
+      // Step 2: Update target entry to moved entry's original day_number
+      const { error: error2 } = await supabase
+        .from("calendar_entries")
+        .update({ day_number: movedEntry.day_number })
+        .eq("id", targetEntry.id);
+
+      if (error2) throw error2;
+
+      // Step 3: Update moved entry to target entry's day_number
+      const { error: error3 } = await supabase
+        .from("calendar_entries")
+        .update({ day_number: targetEntry.day_number })
+        .eq("id", movedEntry.id);
+
+      if (error3) throw error3;
 
       toast.success("Reihenfolge erfolgreich aktualisiert");
       fetchEntries();
