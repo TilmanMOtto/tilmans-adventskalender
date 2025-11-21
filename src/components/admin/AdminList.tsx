@@ -152,31 +152,22 @@ const AdminList = ({ onEdit, refreshTrigger }: AdminListProps) => {
     const newEntries = arrayMove(entries, oldIndex, newIndex);
     setEntries(newEntries);
 
-    // Swap day_numbers in database
-    const movedEntry = entries[oldIndex];
-    const targetEntry = entries[newIndex];
-
     try {
-      // Use a temporary day_number to avoid unique constraint violation
-      const tempDayNumber = 999;
+      // Update all day_numbers based on new order
+      const updates = newEntries.map((entry, index) => ({
+        id: entry.id,
+        day_number: index + 1,
+      }));
 
-      // Step 1: Set first entry to temp value
-      await supabase
-        .from("calendar_entries")
-        .update({ day_number: tempDayNumber })
-        .eq("id", movedEntry.id);
+      // Batch update all entries
+      for (const update of updates) {
+        const { error } = await supabase
+          .from("calendar_entries")
+          .update({ day_number: update.day_number })
+          .eq("id", update.id);
 
-      // Step 2: Update target entry to moved entry's original day_number
-      await supabase
-        .from("calendar_entries")
-        .update({ day_number: movedEntry.day_number })
-        .eq("id", targetEntry.id);
-
-      // Step 3: Update moved entry to target entry's day_number
-      await supabase
-        .from("calendar_entries")
-        .update({ day_number: targetEntry.day_number })
-        .eq("id", movedEntry.id);
+        if (error) throw error;
+      }
 
       toast.success("Reihenfolge erfolgreich aktualisiert");
       fetchEntries();
