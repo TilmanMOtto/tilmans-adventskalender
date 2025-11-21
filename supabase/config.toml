@@ -2,3 +2,6 @@ project_id = "rysjbepsnfegamxmmdcj"
 
 [functions.translate-story]
 verify_jwt = true
+
+[functions.transcribe-and-refine]
+verify_jwt = true

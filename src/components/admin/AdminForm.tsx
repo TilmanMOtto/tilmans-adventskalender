@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Upload, Languages } from "lucide-react";
+import { Upload, Languages, Mic } from "lucide-react";
 
 interface AdminFormProps {
   editingEntry: any;
@@ -23,6 +23,7 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [translating, setTranslating] = useState(false);
+  const [transcribing, setTranscribing] = useState(false);
 
   useEffect(() => {
     if (editingEntry) {
@@ -82,6 +83,47 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
       toast.error(error.message || "Fehler bei der Übersetzung");
     } finally {
       setTranslating(false);
+    }
+  };
+
+  const handleTranscribeAndRefine = async () => {
+    if (!audioFile) {
+      toast.error("Bitte zuerst eine Audio-Datei auswählen");
+      return;
+    }
+
+    setTranscribing(true);
+    toast.info("Audio wird transkribiert und verfeinert... Dies kann 10-30 Sekunden dauern.");
+
+    try {
+      // Convert audio file to base64
+      const reader = new FileReader();
+      const base64Audio = await new Promise<string>((resolve, reject) => {
+        reader.onload = () => {
+          const result = reader.result as string;
+          // Remove data URL prefix to get just the base64 data
+          const base64 = result.split(',')[1];
+          resolve(base64);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(audioFile);
+      });
+
+      const { data, error } = await supabase.functions.invoke('transcribe-and-refine', {
+        body: { audio: base64Audio }
+      });
+
+      if (error) throw error;
+
+      if (data.refinedText) {
+        setStory(data.refinedText);
+        toast.success("Transkription und Verfeinerung erfolgreich!");
+      }
+    } catch (error: any) {
+      console.error("Transcription error:", error);
+      toast.error(error.message || "Fehler bei der Transkription");
+    } finally {
+      setTranscribing(false);
     }
   };
 
@@ -321,6 +363,17 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
               <p className="text-sm text-muted-foreground">Vorhandene Audio-Datei. Neue hochladen zum Ersetzen.</p>
             )}
           </div>
+
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleTranscribeAndRefine}
+            disabled={transcribing || !audioFile}
+            className="w-full"
+          >
+            <Mic className="w-4 h-4 mr-2" />
+            {transcribing ? "Wird transkribiert..." : "Audio transkribieren und verfeinern"}
+          </Button>
 
           <div className="flex gap-2">
             <Button 
