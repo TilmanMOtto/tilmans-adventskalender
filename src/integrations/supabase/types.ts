@@ -23,7 +23,9 @@ export type Database = {
           image_url: string | null
           image_urls: Json | null
           story: string
+          story_en: string | null
           title: string
+          title_en: string | null
           updated_at: string | null
         }
         Insert: {
@@ -34,7 +36,9 @@ export type Database = {
           image_url?: string | null
           image_urls?: Json | null
           story: string
+          story_en?: string | null
           title: string
+          title_en?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -45,7 +49,9 @@ export type Database = {
           image_url?: string | null
           image_urls?: Json | null
           story?: string
+          story_en?: string | null
           title?: string
+          title_en?: string | null
           updated_at?: string | null
         }
         Relationships: []
@@ -54,16 +60,19 @@ export type Database = {
         Row: {
           created_at: string | null
           id: string
+          preferred_language: string | null
           username: string
         }
         Insert: {
           created_at?: string | null
           id: string
+          preferred_language?: string | null
           username: string
         }
         Update: {
           created_at?: string | null
           id?: string
+          preferred_language?: string | null
           username?: string
         }
         Relationships: []

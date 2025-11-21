@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { toast } from "sonner";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface DoorModalProps {
   dayNumber: number;
@@ -12,6 +13,7 @@ interface DoorModalProps {
 }
 
 const DoorModal = ({ dayNumber, userId, onClose, onDoorOpened }: DoorModalProps) => {
+  const { language, t } = useLanguage();
   const [entry, setEntry] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -30,7 +32,7 @@ const DoorModal = ({ dayNumber, userId, onClose, onDoorOpened }: DoorModalProps)
       setEntry(data);
       await markAsOpened();
     } else {
-      toast.error("Noch kein Inhalt für diesen Tag verfügbar!");
+      toast.error(language === 'de' ? "Noch kein Inhalt für diesen Tag verfügbar!" : "No content available for this day yet!");
       onClose();
     }
     setLoading(false);
@@ -79,7 +81,7 @@ const DoorModal = ({ dayNumber, userId, onClose, onDoorOpened }: DoorModalProps)
           <>
             <DialogHeader>
               <DialogTitle className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                Tag {dayNumber}: {entry.title}
+                {language === 'de' ? 'Tag' : 'Day'} {dayNumber}: {language === 'en' && entry.title_en ? entry.title_en : entry.title}
               </DialogTitle>
             </DialogHeader>
             
@@ -134,7 +136,7 @@ const DoorModal = ({ dayNumber, userId, onClose, onDoorOpened }: DoorModalProps)
             
             <div className="prose prose-lg max-w-none">
               <p className="text-foreground whitespace-pre-wrap leading-relaxed">
-                {parseStoryText(entry.story)}
+                {parseStoryText(language === 'en' && entry.story_en ? entry.story_en : entry.story)}
               </p>
             </div>
           </>

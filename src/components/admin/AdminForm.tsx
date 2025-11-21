@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Upload } from "lucide-react";
+import { Upload, Languages } from "lucide-react";
 
 interface AdminFormProps {
   editingEntry: any;
@@ -16,16 +16,21 @@ interface AdminFormProps {
 const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
   const [dayNumber, setDayNumber] = useState("");
   const [title, setTitle] = useState("");
+  const [titleEn, setTitleEn] = useState("");
   const [story, setStory] = useState("");
+  const [storyEn, setStoryEn] = useState("");
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [translating, setTranslating] = useState(false);
 
   useEffect(() => {
     if (editingEntry) {
       setDayNumber(editingEntry.day_number.toString());
       setTitle(editingEntry.title);
+      setTitleEn(editingEntry.title_en || "");
       setStory(editingEntry.story);
+      setStoryEn(editingEntry.story_en || "");
     } else {
       resetForm();
     }
@@ -34,7 +39,9 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
   const resetForm = () => {
     setDayNumber("");
     setTitle("");
+    setTitleEn("");
     setStory("");
+    setStoryEn("");
     setImageFiles([]);
     setAudioFile(null);
   };
@@ -48,6 +55,33 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
   const handleAudioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setAudioFile(e.target.files[0]);
+    }
+  };
+
+  const handleTranslate = async () => {
+    if (!title || !story) {
+      toast.error("Bitte Titel und Geschichte ausfüllen");
+      return;
+    }
+
+    setTranslating(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('translate-story', {
+        body: { title, story }
+      });
+
+      if (error) throw error;
+
+      if (data.title_en && data.story_en) {
+        setTitleEn(data.title_en);
+        setStoryEn(data.story_en);
+        toast.success("Übersetzung erfolgreich!");
+      }
+    } catch (error: any) {
+      console.error("Translation error:", error);
+      toast.error(error.message || "Fehler bei der Übersetzung");
+    } finally {
+      setTranslating(false);
     }
   };
 
@@ -117,7 +151,6 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
           setUploading(false);
           return;
         }
-        // Append new images to existing ones when editing
         imageUrls = editingEntry ? [...imageUrls, ...newUrls] : newUrls;
       }
 
@@ -132,7 +165,9 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
       const entryData = {
         day_number: parseInt(dayNumber),
         title,
+        title_en: titleEn || null,
         story,
+        story_en: storyEn || null,
         image_urls: imageUrls,
         audio_url: audioUrl,
       };
@@ -188,7 +223,7 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="title">Titel</Label>
+            <Label htmlFor="title">Titel (Deutsch)</Label>
             <Input
               id="title"
               type="text"
@@ -200,7 +235,18 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="story">Geschichte</Label>
+            <Label htmlFor="titleEn">Titel (Englisch)</Label>
+            <Input
+              id="titleEn"
+              type="text"
+              value={titleEn}
+              onChange={(e) => setTitleEn(e.target.value)}
+              placeholder="A special memory..."
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="story">Geschichte (Deutsch)</Label>
             <Textarea
               id="story"
               value={story}
@@ -210,6 +256,28 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
               rows={6}
             />
           </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="storyEn">Geschichte (Englisch)</Label>
+            <Textarea
+              id="storyEn"
+              value={storyEn}
+              onChange={(e) => setStoryEn(e.target.value)}
+              placeholder="Tell your story here..."
+              rows={6}
+            />
+          </div>
+
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleTranslate}
+            disabled={translating || !title || !story}
+            className="w-full"
+          >
+            <Languages className="w-4 h-4 mr-2" />
+            {translating ? "Wird übersetzt..." : "Ins Englische übersetzen"}
+          </Button>
 
           <div className="space-y-2">
             <Label htmlFor="image">Bilder und Videos (Mehrere erlaubt)</Label>
