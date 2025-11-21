@@ -117,6 +117,36 @@ const DoorModal = ({ dayNumber, userId, onClose, onDoorOpened }: DoorModalProps)
               </Carousel>
             )}
             
+            {entry.audio_url && (
+              <div className="my-4">
+                <audio 
+                  controls 
+                  className="w-full"
+                  preload="metadata"
+                >
+                  <source src={entry.audio_url} type="audio/mpeg" />
+                  <source src={entry.audio_url} type="audio/wav" />
+                  <source src={entry.audio_url} type="audio/ogg" />
+                  Ihr Browser unterstützt das Audio-Element nicht.
+                </audio>
+              </div>
+            )}
+            
+            {entry.audio_url && (
+              <div className="my-6">
+                <audio 
+                  controls 
+                  className="w-full"
+                  preload="metadata"
+                >
+                  <source src={entry.audio_url} type="audio/mpeg" />
+                  <source src={entry.audio_url} type="audio/wav" />
+                  <source src={entry.audio_url} type="audio/ogg" />
+                  Ihr Browser unterstützt das Audio-Element nicht.
+                </audio>
+              </div>
+            )}
+            
             <div className="prose prose-lg max-w-none">
               <p className="text-foreground whitespace-pre-wrap leading-relaxed">
                 {parseStoryText(entry.story)}
