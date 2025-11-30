@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Upload, Languages, Mic } from "lucide-react";
+import { Upload, Languages, Mic, X } from "lucide-react";
 
 interface AdminFormProps {
   editingEntry: any;
@@ -20,6 +20,7 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
   const [story, setStory] = useState("");
   const [storyEn, setStoryEn] = useState("");
   const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [existingImageUrls, setExistingImageUrls] = useState<string[]>([]);
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [translating, setTranslating] = useState(false);
@@ -32,6 +33,7 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
       setTitleEn(editingEntry.title_en || "");
       setStory(editingEntry.story);
       setStoryEn(editingEntry.story_en || "");
+      setExistingImageUrls(editingEntry.image_urls || []);
     } else {
       resetForm();
     }
@@ -44,7 +46,18 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
     setStory("");
     setStoryEn("");
     setImageFiles([]);
+    setExistingImageUrls([]);
     setAudioFile(null);
+  };
+
+  const handleDeleteExistingImage = (urlToDelete: string) => {
+    setExistingImageUrls(prev => prev.filter(url => url !== urlToDelete));
+    toast.success("Bild wird beim Speichern entfernt");
+  };
+
+  const getImageFileName = (url: string) => {
+    const parts = url.split('/');
+    return parts[parts.length - 1];
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -185,7 +198,7 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
     setUploading(true);
 
     try {
-      let imageUrls = editingEntry?.image_urls || [];
+      let imageUrls = existingImageUrls;
       
       if (imageFiles.length > 0) {
         const newUrls = await uploadImages();
@@ -193,7 +206,7 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
           setUploading(false);
           return;
         }
-        imageUrls = editingEntry ? [...imageUrls, ...newUrls] : newUrls;
+        imageUrls = [...imageUrls, ...newUrls];
       }
 
       let audioUrl = editingEntry?.audio_url || null;
@@ -335,14 +348,31 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
               <Upload className="w-5 h-5 text-muted-foreground" />
             </div>
             {imageFiles.length > 0 && (
-              <p className="text-sm text-muted-foreground">{imageFiles.length} Datei(en) ausgewählt</p>
-            )}
-            {editingEntry?.image_urls && editingEntry.image_urls.length > 0 && imageFiles.length === 0 && (
-              <p className="text-sm text-muted-foreground">
-                {editingEntry.image_urls.length} vorhandene(s) Datei(en). Neue hochladen um weitere hinzuzufügen.
-              </p>
+              <p className="text-sm text-muted-foreground">{imageFiles.length} neue Datei(en) ausgewählt</p>
             )}
           </div>
+
+          {existingImageUrls.length > 0 && (
+            <div className="space-y-2">
+              <Label>Vorhandene Dateien</Label>
+              <div className="space-y-1">
+                {existingImageUrls.map((url, index) => (
+                  <div key={index} className="flex items-center justify-between p-2 border rounded text-sm">
+                    <span className="truncate flex-1">{getImageFileName(url)}</span>
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => handleDeleteExistingImage(url)}
+                      className="h-6 w-6 ml-2"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="space-y-2">
             <Label htmlFor="audio">Audio-Datei (optional)</Label>
