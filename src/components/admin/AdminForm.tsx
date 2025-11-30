@@ -198,7 +198,10 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
     setUploading(true);
 
     try {
-      let imageUrls = existingImageUrls;
+      // Start with existing image URLs (handles manual deletions)
+      // For new entries, existingImageUrls will be empty
+      // For edits, it contains the current images (minus any manually deleted)
+      let imageUrls = [...existingImageUrls];
       
       if (imageFiles.length > 0) {
         const newUrls = await uploadImages();
