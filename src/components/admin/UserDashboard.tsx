@@ -33,7 +33,7 @@ const UserDashboard = () => {
   const fetchUserProgress = async () => {
     setLoading(true);
     
-    const { data: profiles } = await supabase
+    const { data: profiles, error: profilesError } = await supabase
       .from("profiles")
       .select(`
         id,
@@ -42,17 +42,29 @@ const UserDashboard = () => {
       `)
       .order("username");
 
-    if (!profiles) {
+    if (profilesError) {
+      console.error("Error fetching profiles:", profilesError);
+      setUsersProgress([]);
+      setLoading(false);
+      return;
+    }
+
+    if (!profiles || profiles.length === 0) {
+      setUsersProgress([]);
       setLoading(false);
       return;
     }
 
     const progressPromises = profiles.map(async (profile) => {
-      const { data: progress } = await supabase
+      const { data: progress, error: progressError } = await supabase
         .from("user_progress")
         .select("day_number")
         .eq("user_id", profile.id)
         .order("day_number");
+
+      if (progressError) {
+        console.error(`Error fetching progress for user ${profile.username}:`, progressError);
+      }
 
       const doorsOpened = progress?.map((p) => p.day_number) || [];
       const percentage = (doorsOpened.length / totalDays) * 100;
