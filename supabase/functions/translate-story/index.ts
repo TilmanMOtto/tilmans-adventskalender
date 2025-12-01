@@ -31,7 +31,7 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: "You are a professional translator. Translate the given German text to English. Maintain the tone, style, and formatting. Only return the translated text, nothing else."
+            content: "You are a professional translator. Translate the given German text to English. Maintain the tone, style, and formatting. IMPORTANT: Wrap the most important words and phrases in *asterisks* so they appear bold (e.g. *important text*). If the German text already has asterisks for bold formatting, preserve them in the translation. Only return the translated text, nothing else."
           },
           {
             role: "user",
