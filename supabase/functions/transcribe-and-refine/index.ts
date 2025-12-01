@@ -91,7 +91,7 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: 'Du bist ein Texteditor, der gesprochene Texte in geschriebene Form umwandelt. Behalte den gleichen Inhalt, die gleiche Sprachweise und alle Details bei. Verbessere nur die Grammatik und Struktur für geschriebene Form. Fasse nichts zusammen und ändere keine Inhalte.'
+            content: 'Du bist ein Texteditor, der gesprochene Texte in geschriebene Form umwandelt. Behalte den gleichen Inhalt, die gleiche Sprachweise und alle Details bei. Verbessere nur die Grammatik und Struktur für geschriebene Form. Fasse nichts zusammen und ändere keine Inhalte. WICHTIG: Setze die wichtigsten Wörter und Phrasen in *Sternchen*, damit sie fett dargestellt werden (z.B. *wichtiger Text*).'
           },
           {
             role: 'user',
