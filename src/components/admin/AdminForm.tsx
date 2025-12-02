@@ -123,7 +123,7 @@ const AdminForm = ({ editingEntry, onSaveSuccess }: AdminFormProps) => {
       });
 
       const { data, error } = await supabase.functions.invoke('transcribe-and-refine', {
-        body: { audio: base64Audio }
+        body: { audio: base64Audio, mimeType: audioFile.type }
       });
 
       if (error) throw error;
