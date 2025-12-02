@@ -12,13 +12,30 @@ serve(async (req) => {
   }
 
   try {
-    const { audio } = await req.json();
+    const { audio, mimeType } = await req.json();
     
     if (!audio) {
       throw new Error('No audio data provided');
     }
 
-    console.log('Starting transcription...');
+    // Map MIME types to file extensions
+    const mimeToExtension: Record<string, string> = {
+      'audio/ogg': 'ogg',
+      'audio/webm': 'webm',
+      'audio/mpeg': 'mp3',
+      'audio/mp3': 'mp3',
+      'audio/mp4': 'm4a',
+      'audio/x-m4a': 'm4a',
+      'audio/wav': 'wav',
+      'audio/wave': 'wav',
+      'audio/flac': 'flac',
+      'audio/oga': 'oga',
+    };
+
+    const fileExtension = mimeToExtension[mimeType] || 'webm';
+    const actualMimeType = mimeType || 'audio/webm';
+
+    console.log(`Starting transcription... MIME: ${actualMimeType}, Extension: ${fileExtension}`);
 
     // Convert base64 to binary in chunks to prevent memory issues
     const processBase64Chunks = (base64String: string, chunkSize = 32768) => {
@@ -54,8 +71,8 @@ serve(async (req) => {
     
     // Prepare form data for OpenAI Whisper
     const formData = new FormData();
-    const blob = new Blob([binaryAudio], { type: 'audio/webm' });
-    formData.append('file', blob, 'audio.webm');
+    const blob = new Blob([binaryAudio], { type: actualMimeType });
+    formData.append('file', blob, `audio.${fileExtension}`);
     formData.append('model', 'whisper-1');
     formData.append('language', 'de');
 
