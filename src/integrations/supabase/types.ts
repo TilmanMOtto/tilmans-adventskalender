@@ -56,6 +56,51 @@ export type Database = {
         }
         Relationships: []
       }
+      door_comments: {
+        Row: {
+          comment_text: string
+          created_at: string | null
+          day_number: number
+          id: string
+          user_id: string
+        }
+        Insert: {
+          comment_text: string
+          created_at?: string | null
+          day_number: number
+          id?: string
+          user_id: string
+        }
+        Update: {
+          comment_text?: string
+          created_at?: string | null
+          day_number?: number
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      door_likes: {
+        Row: {
+          created_at: string | null
+          day_number: number
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          day_number: number
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          day_number?: number
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null
