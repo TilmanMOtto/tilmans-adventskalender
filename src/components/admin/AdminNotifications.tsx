@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Heart, MessageCircle, Trash2, Calendar, User } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Heart, MessageCircle, Trash2, Calendar, User, Reply, Send } from "lucide-react";
 import { toast } from "sonner";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -12,6 +13,8 @@ interface Comment {
   day_number: number;
   comment_text: string;
   created_at: string;
+  reply_text: string | null;
+  replied_at: string | null;
   username?: string;
 }
 
@@ -26,6 +29,8 @@ const AdminNotifications = () => {
   const [likeSummary, setLikeSummary] = useState<LikeSummary[]>([]);
   const [totalLikes, setTotalLikes] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [replyingTo, setReplyingTo] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState("");
 
   useEffect(() => {
     fetchNotifications();
@@ -35,7 +40,7 @@ const AdminNotifications = () => {
     // Fetch all comments with usernames
     const { data: commentsData } = await supabase
       .from("door_comments")
-      .select("id, user_id, day_number, comment_text, created_at")
+      .select("id, user_id, day_number, comment_text, created_at, reply_text, replied_at")
       .order("created_at", { ascending: false });
 
     if (commentsData) {
@@ -92,6 +97,32 @@ const AdminNotifications = () => {
 
     setComments(comments.filter(c => c.id !== commentId));
     toast.success(language === 'de' ? "Kommentar gelöscht" : "Comment deleted");
+  };
+
+  const submitReply = async (commentId: string) => {
+    if (!replyText.trim()) return;
+
+    const { error } = await supabase
+      .from("door_comments")
+      .update({ 
+        reply_text: replyText.trim(),
+        replied_at: new Date().toISOString()
+      })
+      .eq("id", commentId);
+
+    if (error) {
+      toast.error(language === 'de' ? "Fehler beim Antworten" : "Error replying");
+      return;
+    }
+
+    setComments(comments.map(c => 
+      c.id === commentId 
+        ? { ...c, reply_text: replyText.trim(), replied_at: new Date().toISOString() }
+        : c
+    ));
+    setReplyingTo(null);
+    setReplyText("");
+    toast.success(language === 'de' ? "Antwort gesendet!" : "Reply sent!");
   };
 
   const formatDate = (dateString: string) => {
@@ -153,7 +184,7 @@ const AdminNotifications = () => {
               {comments.map((comment) => (
                 <div 
                   key={comment.id}
-                  className="bg-muted/50 rounded-lg p-4 space-y-2"
+                  className="bg-muted/50 rounded-lg p-4 space-y-3"
                 >
                   <div className="flex justify-between items-start">
                     <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
@@ -177,6 +208,68 @@ const AdminNotifications = () => {
                     </Button>
                   </div>
                   <p className="text-foreground">{comment.comment_text}</p>
+                  
+                  {/* Existing Reply */}
+                  {comment.reply_text && (
+                    <div className="pl-3 border-l-2 border-primary/50 bg-primary/5 rounded-r-lg p-2">
+                      <div className="flex items-center gap-1 text-xs text-primary font-medium mb-1">
+                        <Reply className="w-3 h-3" />
+                        {language === 'de' ? 'Deine Antwort' : 'Your reply'}
+                        {comment.replied_at && (
+                          <span className="text-muted-foreground font-normal">
+                            · {formatDate(comment.replied_at)}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-sm">{comment.reply_text}</p>
+                    </div>
+                  )}
+                  
+                  {/* Reply Input */}
+                  {replyingTo === comment.id ? (
+                    <div className="flex gap-2">
+                      <Textarea
+                        value={replyText}
+                        onChange={(e) => setReplyText(e.target.value)}
+                        placeholder={language === 'de' ? 'Deine Antwort...' : 'Your reply...'}
+                        className="min-h-[60px] resize-none"
+                      />
+                      <div className="flex flex-col gap-1">
+                        <Button 
+                          onClick={() => submitReply(comment.id)}
+                          disabled={!replyText.trim()}
+                          size="icon"
+                          className="shrink-0"
+                        >
+                          <Send className="w-4 h-4" />
+                        </Button>
+                        <Button 
+                          onClick={() => { setReplyingTo(null); setReplyText(""); }}
+                          variant="outline"
+                          size="icon"
+                          className="shrink-0"
+                        >
+                          ✕
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="gap-1"
+                      onClick={() => { 
+                        setReplyingTo(comment.id); 
+                        setReplyText(comment.reply_text || "");
+                      }}
+                    >
+                      <Reply className="w-3 h-3" />
+                      {comment.reply_text 
+                        ? (language === 'de' ? 'Antwort bearbeiten' : 'Edit reply')
+                        : (language === 'de' ? 'Antworten' : 'Reply')
+                      }
+                    </Button>
+                  )}
                 </div>
               ))}
             </div>
