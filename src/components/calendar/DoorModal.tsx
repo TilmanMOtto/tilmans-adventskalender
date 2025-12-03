@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { toast } from "sonner";
 import { useLanguage } from "@/contexts/LanguageContext";
+import DoorReactions from "./DoorReactions";
 
 interface DoorModalProps {
   dayNumber: number;
@@ -139,6 +140,8 @@ const DoorModal = ({ dayNumber, userId, onClose, onDoorOpened }: DoorModalProps)
                 {parseStoryText(language === 'en' && entry.story_en ? entry.story_en : entry.story)}
               </p>
             </div>
+
+            <DoorReactions dayNumber={dayNumber} userId={userId} />
           </>
         ) : null}
       </DialogContent>

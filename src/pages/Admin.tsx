@@ -8,6 +8,7 @@ import AdminForm from "@/components/admin/AdminForm";
 import AdminList from "@/components/admin/AdminList";
 import UserDashboard from "@/components/admin/UserDashboard";
 import ExportCalendar from "@/components/admin/ExportCalendar";
+import AdminNotifications from "@/components/admin/AdminNotifications";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Admin = () => {
@@ -80,8 +81,9 @@ const Admin = () => {
         </div>
 
         <Tabs defaultValue="content" className="space-y-6">
-          <TabsList className="grid w-full max-w-2xl grid-cols-3">
+          <TabsList className="grid w-full max-w-2xl grid-cols-4">
             <TabsTrigger value="content">Inhaltsverwaltung</TabsTrigger>
+            <TabsTrigger value="reactions">Reaktionen</TabsTrigger>
             <TabsTrigger value="progress">Benutzerfortschritt</TabsTrigger>
             <TabsTrigger value="export">Export</TabsTrigger>
           </TabsList>
@@ -97,6 +99,10 @@ const Admin = () => {
                 refreshTrigger={refreshTrigger}
               />
             </div>
+          </TabsContent>
+
+          <TabsContent value="reactions">
+            <AdminNotifications />
           </TabsContent>
 
           <TabsContent value="progress">
