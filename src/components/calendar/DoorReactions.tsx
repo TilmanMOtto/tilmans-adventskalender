@@ -16,6 +16,8 @@ interface Comment {
   id: string;
   comment_text: string;
   created_at: string;
+  reply_text: string | null;
+  replied_at: string | null;
 }
 
 const DoorReactions = ({ dayNumber, userId }: DoorReactionsProps) => {
@@ -52,7 +54,7 @@ const DoorReactions = ({ dayNumber, userId }: DoorReactionsProps) => {
     // Fetch user's own comments
     const { data: userComments } = await supabase
       .from("door_comments")
-      .select("id, comment_text, created_at")
+      .select("id, comment_text, created_at, reply_text, replied_at")
       .eq("day_number", dayNumber)
       .eq("user_id", userId)
       .order("created_at", { ascending: false });
@@ -158,7 +160,7 @@ const DoorReactions = ({ dayNumber, userId }: DoorReactionsProps) => {
             {comments.map((comment) => (
               <div 
                 key={comment.id}
-                className="bg-muted/50 rounded-lg p-3 space-y-1"
+                className="bg-muted/50 rounded-lg p-3 space-y-2"
               >
                 <div className="flex justify-between items-start">
                   <span className="text-xs text-muted-foreground">
@@ -174,6 +176,21 @@ const DoorReactions = ({ dayNumber, userId }: DoorReactionsProps) => {
                   </Button>
                 </div>
                 <p className="text-sm">{comment.comment_text}</p>
+                
+                {/* Tilman's Reply */}
+                {comment.reply_text && (
+                  <div className="mt-2 pl-3 border-l-2 border-primary/50 bg-primary/5 rounded-r-lg p-2">
+                    <div className="flex items-center gap-1 text-xs text-primary font-medium mb-1">
+                      {t('door.myReply')}
+                      {comment.replied_at && (
+                        <span className="text-muted-foreground font-normal">
+                          · {formatDate(comment.replied_at)}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-sm">{comment.reply_text}</p>
+                  </div>
+                )}
               </div>
             ))}
           </div>
