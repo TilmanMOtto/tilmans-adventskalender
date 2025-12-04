@@ -15,8 +15,6 @@ interface Comment {
   created_at: string;
   reply_text: string | null;
   replied_at: string | null;
-  user_response: string | null;
-  user_response_at: string | null;
   username?: string;
 }
 
@@ -42,7 +40,7 @@ const AdminNotifications = () => {
     // Fetch all comments with usernames
     const { data: commentsData } = await supabase
       .from("door_comments")
-      .select("id, user_id, day_number, comment_text, created_at, reply_text, replied_at, user_response, user_response_at")
+      .select("id, user_id, day_number, comment_text, created_at, reply_text, replied_at")
       .order("created_at", { ascending: false });
 
     if (commentsData) {
@@ -224,22 +222,6 @@ const AdminNotifications = () => {
                         )}
                       </div>
                       <p className="text-sm">{comment.reply_text}</p>
-                    </div>
-                  )}
-                  
-                  {/* User's Response to Reply */}
-                  {comment.user_response && (
-                    <div className="pl-3 border-l-2 border-green-500/50 bg-green-500/5 rounded-r-lg p-2">
-                      <div className="flex items-center gap-1 text-xs text-green-600 font-medium mb-1">
-                        <MessageCircle className="w-3 h-3" />
-                        {t('admin.userResponse')}
-                        {comment.user_response_at && (
-                          <span className="text-muted-foreground font-normal">
-                            · {formatDate(comment.user_response_at)}
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-sm">{comment.user_response}</p>
                     </div>
                   )}
                   

@@ -62,36 +62,27 @@ export type Database = {
           created_at: string | null
           day_number: number
           id: string
-          is_read: boolean
           replied_at: string | null
           reply_text: string | null
           user_id: string
-          user_response: string | null
-          user_response_at: string | null
         }
         Insert: {
           comment_text: string
           created_at?: string | null
           day_number: number
           id?: string
-          is_read?: boolean
           replied_at?: string | null
           reply_text?: string | null
           user_id: string
-          user_response?: string | null
-          user_response_at?: string | null
         }
         Update: {
           comment_text?: string
           created_at?: string | null
           day_number?: number
           id?: string
-          is_read?: boolean
           replied_at?: string | null
           reply_text?: string | null
           user_id?: string
-          user_response?: string | null
-          user_response_at?: string | null
         }
         Relationships: []
       }
