@@ -117,7 +117,7 @@ const Calendar = () => {
               <img 
                 src={tilmanPhoto} 
                 alt="Tilman" 
-                className="h-auto w-12 md:w-16 rounded-full object-cover shadow-lg self-stretch group-hover:ring-2 group-hover:ring-primary transition-all"
+                className="w-12 h-12 md:w-16 md:h-16 rounded-full object-cover shadow-lg group-hover:ring-2 group-hover:ring-primary transition-all"
               />
               {unreadCount > 0 && (
                 <div className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
