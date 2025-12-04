@@ -8,9 +8,11 @@ import CalendarGrid from "@/components/calendar/CalendarGrid";
 import DoorModal from "@/components/calendar/DoorModal";
 import SnowAnimation from "@/components/calendar/SnowAnimation";
 import LanguageToggle from "@/components/LanguageToggle";
+import UserMessagesSheet from "@/components/calendar/UserMessagesSheet";
 import { useLanguage } from "@/contexts/LanguageContext";
 import heroBackground from "@/assets/hero-background.jpg";
 import tilmanPhoto from "@/assets/tilman-welcome.jpg";
+
 const Calendar = () => {
   const navigate = useNavigate();
   const { language, t } = useLanguage();
@@ -20,6 +22,9 @@ const Calendar = () => {
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [messagesOpen, setMessagesOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+
   useEffect(() => {
     checkUser();
     const {
@@ -32,10 +37,12 @@ const Calendar = () => {
       } else if (session) {
         setUser(session.user);
         fetchProfile(session.user.id);
+        fetchUnreadCount(session.user.id);
       }
     });
     return () => subscription.unsubscribe();
   }, [navigate]);
+
   const checkUser = async () => {
     const {
       data: {
@@ -48,8 +55,10 @@ const Calendar = () => {
     }
     setUser(session.user);
     await fetchProfile(session.user.id);
+    await fetchUnreadCount(session.user.id);
     setLoading(false);
   };
+
   const fetchProfile = async (userId: string) => {
     const {
       data: profileData
@@ -62,11 +71,24 @@ const Calendar = () => {
     } = await supabase.from("user_roles").select("role").eq("user_id", userId).eq("role", "admin").maybeSingle();
     setIsAdmin(!!rolesData);
   };
+
+  const fetchUnreadCount = async (userId: string) => {
+    const { count } = await supabase
+      .from("door_comments")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", userId)
+      .not("reply_text", "is", null)
+      .eq("is_read", false);
+    
+    setUnreadCount(count || 0);
+  };
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     toast.success(language === 'de' ? "Erfolgreich abgemeldet" : "Successfully logged out");
     navigate("/auth");
   };
+
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
@@ -75,6 +97,7 @@ const Calendar = () => {
         </div>
       </div>;
   }
+
   return <div className="min-h-screen" style={{
     backgroundImage: `url(${heroBackground})`,
     backgroundSize: "cover",
@@ -87,11 +110,21 @@ const Calendar = () => {
       <div className="relative z-10 container mx-auto px-4 py-4 md:py-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4 md:mb-8">
           <div className="flex items-stretch gap-3 md:gap-4">
-            <img 
-              src={tilmanPhoto} 
-              alt="Tilman" 
-              className="h-auto w-12 md:w-16 rounded-full object-cover shadow-lg self-stretch"
-            />
+            <div 
+              className="relative cursor-pointer group"
+              onClick={() => setMessagesOpen(true)}
+            >
+              <img 
+                src={tilmanPhoto} 
+                alt="Tilman" 
+                className="h-auto w-12 md:w-16 rounded-full object-cover shadow-lg self-stretch group-hover:ring-2 group-hover:ring-primary transition-all"
+              />
+              {unreadCount > 0 && (
+                <div className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
+                  {unreadCount}
+                </div>
+              )}
+            </div>
             <div className="bg-background/80 backdrop-blur-md rounded-lg px-4 py-3 md:px-6 md:py-4 shadow-lg">
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground drop-shadow-lg">
                 {t('calendar.title')}
@@ -116,6 +149,15 @@ const Calendar = () => {
         <CalendarGrid key={refreshKey} onDoorClick={setSelectedDay} userId={user?.id} isAdmin={isAdmin} />
         
         {selectedDay && <DoorModal dayNumber={selectedDay} userId={user?.id} onClose={() => setSelectedDay(null)} onDoorOpened={() => setRefreshKey(prev => prev + 1)} />}
+        
+        {user && (
+          <UserMessagesSheet 
+            open={messagesOpen} 
+            onOpenChange={setMessagesOpen} 
+            userId={user.id}
+            onMessagesRead={() => setUnreadCount(0)}
+          />
+        )}
       </div>
     </div>;
 };
